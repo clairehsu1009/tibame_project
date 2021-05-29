@@ -82,25 +82,25 @@
 
 						<table class="col-md-12" id="sampleTable" style="font-size: 120%">
 							<thead>
-								<tr role="row" class="table-info">
-									<th>功能編號</th>
-									<th class="sorting_asc">功能名稱</th>
+								<tr  role="row" class="table-info" ${(authVO.empno==param.auth_no) ? 'bgcolor=#CCCCFF':''}>
 									<th>員工編號</th>
 									<th>員工姓名</th>
+<!-- 									<th>功能編號</th> -->
+									<th class="sorting_asc">功能名稱</th>
 									<th>狀態</th>
 									<th></th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<%@ include file="page1.file"%>
-								<c:forEach var="authVO" items="${list}" begin="<%=pageIndex%>"
-									end="<%=pageIndex+rowsPerPage-1%>">
-									<tr>
-										<td>${authVO.funno}</td>
-										<td>${funSvc.getOneFun(authVO.funno).funName}</td>
+<%-- 								<%@ include file="page1.file"%> --%>
+<%-- 								<c:forEach var="authVO" items="${list}" begin="<%=pageIndex%>" --%>
+<%-- 									end="<%=pageIndex+rowsPerPage-1%>"> --%>
+									<tr ${(authVO.empno==param.empno) ? 'bgcolor=#CCCCFF':''}>
 										<td>${authVO.empno}</td>
 										<td>${empSvc.getOneEmp(authVO.empno).ename}</td>
+<%-- 										<td>${authVO.funno}</td> --%>
+										<td>${funSvc.getOneFun(authVO.funno).funName}</td>
 										<!-- 											<td><select class="form-control" size="1" name="auth_no"> -->
 										<%-- 													<option value="1" ${(authVO.auth_no==1)? 'selected':''}>正常</option> --%>
 										<%-- 													<option value="0" ${(authVO.auth_no==0)? 'selected':''}>無權限</option> --%>
@@ -115,37 +115,37 @@
 											</c:when>
 										</c:choose>
 
-										<td>
-											<FORM METHOD="post"
-												ACTION="<%=request.getContextPath()%>/auth/auth.do"
-												style="margin-bottom: 0px;">
-												<input class="btn btn-primary" type="submit" value="修改">
-												<input type="hidden" name="empno" value="${authVO.empno}">
-												<input type="hidden" name="funno" value="${authVO.funno}">
-												<input type="hidden" name="auth_no" value="${authVO.auth_no}"> 
-												<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
-												<!--送出本網頁的路徑給Controller-->
-												<input type="hidden" name="whichPage" value="<%=whichPage%>">
-												<input type="hidden" name="action" value="getOne_For_Update">
+<!-- 										<td> -->
+<!-- 											<FORM METHOD="post" -->
+<%-- 												ACTION="<%=request.getContextPath()%>/auth/auth.do" --%>
+<!-- 												style="margin-bottom: 0px;"> -->
+<!-- 												<input class="btn btn-primary" type="submit" value="修改"> -->
+<%-- 												<input type="hidden" name="empno" value="${authVO.empno}"> --%>
+<%-- 												<input type="hidden" name="funno" value="${authVO.funno}"> --%>
+<%-- 												<input type="hidden" name="auth_no" value="${authVO.auth_no}">  --%>
+<%-- 												<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>"> --%>
+<!-- 												送出本網頁的路徑給Controller -->
+<%-- 												<input type="hidden" name="whichPage" value="<%=whichPage%>"> --%>
+<!-- 												<input type="hidden" name="action" value="getOne_For_Update"> -->
 
-											</FORM>
-										</td>
-										<td>
-											<FORM METHOD="post"
-												ACTION="<%=request.getContextPath()%>/auth/auth.do"
-												style="margin-bottom: 0px;">
-												<input class="btn btn-warning" type="submit" value="刪除">
-												<input type="hidden" name="requestURL"
-													value="<%=request.getServletPath()%>">
-												<!--送出本網頁的路徑給Controller-->
-												<input type="hidden" name="whichPage" value="<%=whichPage%>">
-												<input type="hidden" name="funno" value="${authVO.funno}">
-												<input type="hidden" name="empno" value="${authVO.empno}">
-												<input type="hidden" name="action" value="delete">
-											</FORM>
-										</td>
+<!-- 											</FORM> -->
+<!-- 										</td> -->
+<!-- 										<td> -->
+<!-- 											<FORM METHOD="post" -->
+<%-- 												ACTION="<%=request.getContextPath()%>/auth/auth.do" --%>
+<!-- 												style="margin-bottom: 0px;"> -->
+<!-- 												<input class="btn btn-warning" type="submit" value="刪除"> -->
+<!-- 												<input type="hidden" name="requestURL" -->
+<%-- 													value="<%=request.getServletPath()%>"> --%>
+<!-- 												送出本網頁的路徑給Controller -->
+<%-- 												<input type="hidden" name="whichPage" value="<%=whichPage%>"> --%>
+<%-- 												<input type="hidden" name="funno" value="${authVO.funno}"> --%>
+<%-- 												<input type="hidden" name="empno" value="${authVO.empno}"> --%>
+<!-- 												<input type="hidden" name="action" value="delete"> -->
+<!-- 											</FORM> -->
+<!-- 										</td> -->
 									</tr>
-								</c:forEach>
+<%-- 								</c:forEach> --%>
 							</tbody>
 						</table>
 
@@ -154,7 +154,7 @@
 				</div>
 			</div>
 		</div>
-		<%@ include file="page2.file"%>
+<%-- 		<%@ include file="page2.file"%> --%>
 	</main>
 	<jsp:include page="/back-end/backendfooter.jsp" />
 </body>

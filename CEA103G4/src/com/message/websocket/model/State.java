@@ -8,12 +8,15 @@ public class State {
 	private String user;
 	// total users
 	private Set<String> users;
+	// online users
+	private Set<String> online_users;
 
-	public State(String type, String user, Set<String> users) {
+	public State(String type, String user, Set<String> users, Set<String> online_users) {
 		super();
 		this.type = type;
 		this.user = user;
 		this.users = users;
+		this.online_users = online_users;
 	}
 
 	public String getType() {
@@ -38,6 +41,14 @@ public class State {
 
 	public void setUsers(Set<String> users) {
 		this.users = users;
+	}
+
+	public Set<String> getOnline_users() {
+		return online_users;
+	}
+
+	public void setOnline_users(Set<String> online_users) {
+		this.online_users = online_users;
 	}
 
 }

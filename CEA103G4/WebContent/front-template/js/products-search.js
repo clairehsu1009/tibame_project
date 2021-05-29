@@ -18,8 +18,8 @@
       	                    <img class="card-img-top" src="${path}/ProductShowPhoto?product_no=${item.product_no}" alt=""></a>
       	                    </div>
       	    				<ul>
-                        <li class="w-icon active" id="SC${item.product_no}">
-                            <a href="javascript:void(0)"><i class="icon_bag_alt" data-id="${item.product_no}"></i></a>
+                        <li class="w-icon" id="SC${item.product_no}">
+                            <i class="icon_bag_alt" data-id="${item.product_no}"></i>
                         </li>   
                         <li class="w-heart">
       	                            <i class="icon_heart_alt"  data-id="${item.product_no}"></i>
@@ -41,14 +41,7 @@
       	  });
       	  return htmlContent;
       	}
-	const products = document.getElementById('products')
-	products.addEventListener('click', event => {
-		if (event.target.matches('.icon_bag_alt')) {
-	    	addCart(event.target.dataset.id);	
-		}else if (event.target.matches('.icon_heart_alt')){
-			addFavorite(event.target.dataset.id);
-    	}
-});
+
 	
 	function cartProduct(cartdata, path) {
 		var cart  = JSON.parse(cartdata);

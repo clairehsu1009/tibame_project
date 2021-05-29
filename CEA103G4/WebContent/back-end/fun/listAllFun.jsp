@@ -18,7 +18,7 @@
 	content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <html>
 <head>
-<title>所有員工資料 - listAllEmp.jsp</title>
+<title>後台權限管理</title>
 
 
 <script
@@ -39,7 +39,7 @@
 		<div class="app-title">
 			<div>
 				<h1>
-					<i class="fa fa-dashboard"></i> 所有權限
+					<i class="fa fa-dashboard"></i> 權限管理
 				</h1>
 
 			</div>
@@ -67,7 +67,7 @@
 								<tr role="row" class="table-info">
 									<th>網站功能編號</th>
 									<th>功能名稱</th>
-									<th>網站功能狀態</th>
+									<th>權限查詢</th>
 									<!-- 								<th>修改</th> -->
 									<!-- 			<th>刪除</th> -->
 								</tr>
@@ -79,14 +79,14 @@
 									<tr>
 										<td>${funVO.funno}</td>
 										<td>${funVO.funName}</td>
-										<c:choose>
-											<c:when test="${funVO.state==0}">
-												<td>關閉</td>
-											</c:when>
-											<c:when test="${funVO.state==1}">
-												<td>正常</td>
-											</c:when>
-										</c:choose>
+<%-- 										<c:choose> --%>
+<%-- 											<c:when test="${funVO.state==0}"> --%>
+<!-- 												<td>關閉</td> -->
+<%-- 											</c:when> --%>
+<%-- 											<c:when test="${funVO.state==1}"> --%>
+<!-- 												<td>正常</td> -->
+<%-- 											</c:when> --%>
+<%-- 										</c:choose> --%>
 										<!-- 				<td><select size="1" name="state"> -->
 										<%-- 						<option value="1" ${(funVO.state==0)? 'selected':''}>開啟</option> --%>
 										<%-- 						<option value="0" ${(funVO.state==0)? 'selected':''}>關閉</option> --%>
@@ -96,26 +96,12 @@
 											<FORM METHOD="post"
 												ACTION="<%=request.getContextPath()%>/fun/fun.do"
 												style="margin-bottom: 0px;">
-												<input type="submit" value="修改"> <input
+												<input class="btn btn-primary" type="submit" value="查詢"> <input
 													type="hidden" name="funno" value="${funVO.funno}">
 												<input type="hidden" name="action" value="getOne_For_Update">
-												<input type="hidden" name="requestURL"
-													value="<%=request.getParameter("requestURL")%>"> <input
-													type="hidden" name="whichPage"
-													value="<%=request.getParameter("whichPage")%>">
 										</FORM>
 										</td>
 
-
-										<td>
-											<FORM METHOD="post"
-												ACTION="<%=request.getContextPath()%>/fun/fun.do"
-												style="margin-bottom: 0px;">
-												<input type="submit" value="刪除"> <input
-													type="hidden" name="funno" value="${funVO.funno}">
-												<input type="hidden" name="action" value="delete">
-											</FORM>
-										</td>
 									</tr>
 								</c:forEach>
 							</tbody>

@@ -15,8 +15,8 @@
         Preloader
     --------------------*/
     $(window).on('load', function () {
-        $(".loader").fadeOut();
-        $("#preloder").fadeOut("slow");
+//        $(".loader").fadeOut("300");
+        $("#preloder").fadeOut("100");
     });
 
     /*------------------
@@ -254,7 +254,7 @@
     	var maxRemaining = $("#maxRemaining").attr("value");
     	if (Count == maxRemaining) {
     		$('#addProduct').prop('disabled',true);
-    		alert("商品數量只剩下"+ maxRemaining +"個");	
+    		Swal.fire("商品數量只剩下"+ maxRemaining +"個");
     	} 
     	if (Count < maxRemaining) {
     		$('#addProduct').prop('disabled',false);
@@ -264,7 +264,7 @@
 	
 	$('.pro-qty').change(function() {
 		var maxRemaining = $("#maxRemaining").attr("value");
-		alert("商品數量只剩下"+ maxRemaining +"個");
+		Swal.fire("商品數量只剩下"+ maxRemaining +"個");
 		$('input[name="proqty"]').val(maxRemaining);
 	});
 

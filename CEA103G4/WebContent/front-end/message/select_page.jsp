@@ -52,12 +52,18 @@
   
   
   <li>
-    <FORM METHOD="post" ACTION="message.do" >
-        <b>輸入訊息編號 (如2001):</b>
-        <input type="text" name="message_no">
-        <input type="hidden" name="action" value="getOne_For_Display">
-        <input type="submit" value="送出">
-    </FORM>
+<!--     <FORM METHOD="post" ACTION="message.do" > -->
+<!--         <b>輸入訊息編號 (如2001):</b> -->
+<!--         <input type="text" name="message_no"> -->
+<!--         <input type="hidden" name="action" value="getOne_For_Display"> -->
+<!--         <input type="submit" value="送出"> -->
+<!--     </FORM> -->
+		<FORM METHOD="post" ACTION="message.do" >
+		 <b>輸入會員編號 (如aaa):</b>
+		 <input type="text" name="user_id">
+		 <input type="hidden" name="action" value="show">
+		 <input type="submit" value="送出"> 
+		</FORM>
   </li>
 
   <jsp:useBean id="messageSvc" scope="page" class="com.message.model.MessageService" />

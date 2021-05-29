@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.live_report.model.Live_reportService;
-import com.live_report.model.Live_reportVO;
-import com.product.model.ProductService;
-import com.product.model.ProductVO;
+import com.live.model.*;
+import com.live_report.model.*;
+import com.product.model.*;
+import com.user.model.*;
 
 @MultipartConfig
 public class Live_reportServlet extends HttpServlet {
@@ -132,34 +132,34 @@ public class Live_reportServlet extends HttpServlet {
 				Live_reportVO live_reportVO = new Live_reportVO();
 				
 				Integer live_report_no = new Integer(req.getParameter("live_report_no").trim());
-				String live_report_content = req.getParameter("live_report_content");
+//				String live_report_content = req.getParameter("live_report_content");
 				Integer live_no = new Integer(req.getParameter("live_no").trim());
-				String user_id = req.getParameter("user_id");
-				Integer empno = new Integer(req.getParameter("empno").trim());
+//				String user_id = req.getParameter("user_id");
+//				Integer empno = new Integer(req.getParameter("empno").trim());
 				Integer live_report_state = new Integer(req.getParameter("live_report_state").trim());
 				
-				byte[] photo = null;
-				Part part = req.getPart("photo");
-				if (part == null || part.getSize() == 0) {
-					req.setAttribute("live_reportVO", live_reportVO);
-					Live_reportService live_reportSvc2 = new Live_reportService();
-					Live_reportVO live_reportVO2 = live_reportSvc2.getOneLive_report(live_report_no);
-					photo = live_reportVO2.getPhoto();
-				} else {
-					req.setAttribute("live_reportVO", live_reportVO);
-					InputStream in = part.getInputStream();
-					photo = new byte[in.available()];
-					in.read(photo);
-					in.close();
-				}
+//				byte[] photo = null;
+//				Part part = req.getPart("photo");
+//				if (part == null || part.getSize() == 0) {
+//					req.setAttribute("live_reportVO", live_reportVO);
+//					Live_reportService live_reportSvc2 = new Live_reportService();
+//					Live_reportVO live_reportVO2 = live_reportSvc2.getOneLive_report(live_report_no);
+//					photo = live_reportVO2.getPhoto();
+//				} else {
+//					req.setAttribute("live_reportVO", live_reportVO);
+//					InputStream in = part.getInputStream();
+//					photo = new byte[in.available()];
+//					in.read(photo);
+//					in.close();
+//				}
 				
 				live_reportVO.setLive_report_no(live_report_no);
-				live_reportVO.setLive_report_content(live_report_content);
-				live_reportVO.setLive_no(live_no);
-				live_reportVO.setUser_id(user_id);
-				live_reportVO.setEmpno(empno);
+//				live_reportVO.setLive_report_content(live_report_content);
+//				live_reportVO.setLive_no(live_no);
+//				live_reportVO.setUser_id(user_id);
+//				live_reportVO.setEmpno(empno);
 				live_reportVO.setLive_report_state(live_report_state);
-				live_reportVO.setPhoto(photo);
+//				live_reportVO.setPhoto(photo);
 				
 
 				// Send the use back to the form, if there were errors
@@ -173,20 +173,32 @@ public class Live_reportServlet extends HttpServlet {
 
 				/*************************** 2.開始修改資料 *****************************************/
 				Live_reportService live_reportSvc = new Live_reportService();
-				live_reportVO = live_reportSvc.updateLive_report(live_report_no, live_report_content, live_no, user_id, empno,
-						live_report_state, photo);
+				live_reportVO = live_reportSvc.updateLive_report(live_report_no,live_report_state);
 
+				// 檢舉通過後被檢舉會員違約次數加1
+				if(live_report_state == 1) {
+					
+					LiveService liveSvc = new LiveService();
+					LiveVO liveVO = liveSvc.getOneLive(live_no);
+					String user_id = liveVO.getUser_id();
+					
+					UserService userSvc = new UserService();
+					UserVO userVO = userSvc.getOneUser(user_id);
+					Integer violation = userVO.getViolation();
+					violation = violation + 1;
+					userSvc.updateUserViolation(user_id,violation);
+				}
 				/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 				req.setAttribute("live_reportVO", live_reportVO); // 資料庫update成功後,正確的的live_reportVO物件,存入req
-				String url = "/back-end/live_report/listOneLive_report.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
+				String url = "/back-end/live_report/listAllLive_report.jsp";
+				RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listAllLive_report.jsp
 				successView.forward(req, res);
 
 				/*************************** 其他可能的錯誤處理 *************************************/
 			} catch (Exception e) {
 				errorMsgs.add("修改資料失敗:" + e.getMessage());
 				RequestDispatcher failureView = req
-						.getRequestDispatcher("/back-end/live_report/update_live_report_input.jsp");
+						.getRequestDispatcher("/back-end/live_report/listAllLive_report.jsp");
 				failureView.forward(req, res);
 			}
 		}
@@ -201,18 +213,25 @@ public class Live_reportServlet extends HttpServlet {
 			try {
 				/*********************** 1.接收請求參數 - 輸入格式的錯誤處理 *************************/
 				String live_report_content = req.getParameter("live_report_content");
+				if(live_report_content == null || live_report_content.trim().length() == 0) {
+					errorMsgs.add("內容請勿空白");
+				}
 				Integer live_no = new Integer(req.getParameter("live_no").trim());
 				String user_id = req.getParameter("user_id");
 				Integer empno = new Integer(req.getParameter("empno").trim());
 				Integer live_report_state = new Integer(req.getParameter("live_report_state").trim());
 
+				byte[] photo = null;
 				Part part = req.getPart("photo");
+				if (part == null || part.getSize() == 0) {
+					errorMsgs.add("請上傳一張檢舉照片");
+				} else {
 				InputStream in = part.getInputStream();
-				byte[] photo = new byte[in.available()];
-
+				photo = new byte[in.available()];
 				in.read(photo);
 				in.close();
-
+				}
+				
 				Live_reportVO live_reportVO = new Live_reportVO();
 				live_reportVO.setLive_report_content(live_report_content);
 				live_reportVO.setLive_no(live_no);
@@ -225,7 +244,7 @@ public class Live_reportServlet extends HttpServlet {
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("live_reportVO", live_reportVO); // 含有輸入格式錯誤的live_reportVO物件,也存入req
 					RequestDispatcher failureView = req
-							.getRequestDispatcher("/back-end/live_report/update_live_report_input.jsp");
+							.getRequestDispatcher("/back-end/live_report/addLive_report.jsp");
 					failureView.forward(req, res);
 					return; // 程式中斷
 				}

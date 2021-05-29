@@ -78,23 +78,23 @@ table td, table tr, table th {
 			<div class="bs-component">
 				<ul class="nav nav-tabs">
 					<li class="nav-item"><a class="nav-link active show"
-						data-toggle="tab" href="#1">已付款未出貨訂單</a></li>
+						data-toggle="tab" href="#1">未出貨訂單</a></li>
 					<li class="nav-item"><a class="nav-link"
-						data-toggle="tab" href="#2">已付款已出貨訂單</a></li>
-					<li class="nav-item"><a class="nav-link" data-toggle="tab"
-						href="#3">未付款訂單</a></li>
+						data-toggle="tab" href="#2">已出貨訂單</a></li>
+<!-- 					<li class="nav-item"><a class="nav-link" data-toggle="tab" -->
+<!-- 						href="#3">未付款訂單</a></li> -->
 				</ul>
 				<div class="tab-content" id="myTabContent">
 					<div class="tab-pane fade active show" id="1">
 						<div class="row">
 							<div class="col-xl-12">
 								<div class="tile">
-									<h3 class="tile-title">已付款未出貨訂單</h3>
+									<h3 class="tile-title">未出貨訂單</h3>
 									<table class="table table-hover">
 										<thead>
 											<tr>
 												<th>#</th>
-												<th>付款截止時間</th>
+												<th>收貨地址</th>
 												<th>訂單狀態</th>
 												<th>訂單金額</th>
 												<th>訂單運費</th>
@@ -125,9 +125,13 @@ table td, table tr, table th {
 															</FORM>
 
 														</td>
-														<td><fmt:formatDate
-																value="${live_orderVO.pay_deadline}"
-																pattern="yyyy-MM-dd HH:mm:ss" /></td>
+														<td>
+<%-- 														<fmt:formatDate --%>
+<%-- 																value="${live_orderVO.pay_deadline}" --%>
+<%-- 																pattern="yyyy-MM-dd HH:mm:ss" /> --%>
+														
+														${live_orderVO.zipcode}${live_orderVO.city}${live_orderVO.town}${live_orderVO.rec_addr}
+														</td>
 														<td>${(live_orderVO.order_state==0)? '未付款':''}
 															${(live_orderVO.order_state==1)? '已付款':''}
 															${(live_orderVO.order_state==2)? '棄單':''}</td>
@@ -155,20 +159,20 @@ table td, table tr, table th {
 												<td></td>
 												<td></td>
 												<td></td>
+												<td><FORM METHOD="post"
+														ACTION="<%=request.getContextPath()%>/live_order/live_order.do"
+														style="margin-bottom: 0px;">
 
 												<c:forEach var="live_orderVO"
 													items="${live_orderSvc.getAllByID2(userVO.user_id)}">
 													<c:if test="${live_orderVO.order_state ==1}">
-														<td><FORM METHOD="post"
-																ACTION="<%=request.getContextPath()%>/live_order/live_order.do"
-																style="margin-bottom: 0px;">
-																<input type="submit" class="btn btn-info" value="出貨">
 																<input type="hidden" id="HB${live_orderVO.live_order_no}" name="live_order_no"
 																	value="${live_orderVO.live_order_no}" disabled> <input
 																	type="hidden" name="action" value="updateShipment">
-															</FORM></td>
 													</c:if>
 												</c:forEach>
+																<input type="submit" class="btn btn-info" value="出貨">
+												</FORM></td>
 											</tr>
 										</tbody>
 									</table>
@@ -186,12 +190,12 @@ table td, table tr, table th {
 						<div class="row">
 							<div class="col-xl-12">
 								<div class="tile">
-									<h3 class="tile-title">已付款已出貨訂單</h3>
+									<h3 class="tile-title">已出貨訂單</h3>
 									<table class="table table-hover">
 										<thead>
 											<tr>
 												<th>#</th>
-												<th>付款截止時間</th>
+												<th>收貨地址</th>
 												<th>訂單狀態</th>
 												<th>訂單金額</th>
 												<th>訂單運費</th>
@@ -220,74 +224,12 @@ table td, table tr, table th {
 																	onclick="document.getElementById('${live_orderVO.live_order_no}').submit();">${live_orderVO.live_order_no}</a>
 															</FORM>
 														</td>
-														<td><fmt:formatDate
-																value="${live_orderVO.pay_deadline}"
-																pattern="yyyy-MM-dd HH:mm:ss" /></td>
-														<td>${(live_orderVO.order_state==0)? '未付款':''}
-															${(live_orderVO.order_state==1)? '已付款':''}
-															${(live_orderVO.order_state==2)? '棄單':''}</td>
-														<td>${live_orderVO.order_price}</td>
-														<td>${live_orderVO.order_shipping}</td>
-														<td>${(live_orderVO.pay_method==0)? '錢包':''}
-															${(live_orderVO.pay_method==1)? '信用卡':''}
-															${(live_orderVO.pay_method==2)? '轉帳':''}</td>
-														<td>${(live_orderVO.logistics==0)? '宅配':'超商'}</td>
-														<td>${(live_orderVO.logistics_state==0)? '未出貨':''}
-															${(live_orderVO.logistics_state==1)? '已出貨':''}
-															${(live_orderVO.logistics_state==2)? '已取貨':''}</td>
-													</tr>
-												</c:if>
-											</c:forEach>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-
-					</div>
-
-					<div class="tab-pane fade" id="3">
-
-						<div class="row">
-							<div class="col-xl-12">
-								<div class="tile">
-									<h3 class="tile-title">未付款訂單</h3>
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>付款截止時間</th>
-												<th>訂單狀態</th>
-												<th>訂單金額</th>
-												<th>訂單運費</th>
-												<th>付款方式</th>
-												<th>物流方式</th>
-												<th>物流狀態</th>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-
-											<c:forEach var="live_orderVO"
-												items="${live_orderSvc.getAllByID2(userVO.user_id)}">
-												<c:if test="${live_orderVO.order_state ==0}">
-
-													<tr>
 														<td>
-															<FORM id="${live_orderVO.live_order_no}" METHOD="post"
-																ACTION="<%=request.getContextPath()%>/live_order/live_order.do"
-																style="margin-bottom: 0px;">
-																<input type="hidden" name="live_order_no"
-																	value="${live_orderVO.live_order_no}"> <input
-																	type="hidden" name="action" value="listDetails_ByNo_B">
-																<a href="#"
-																	onclick="document.getElementById('${live_orderVO.live_order_no}').submit();">${live_orderVO.live_order_no}</a>
-															</FORM>
+<%-- 														<fmt:formatDate --%>
+<%-- 																value="${live_orderVO.pay_deadline}" --%>
+<%-- 																pattern="yyyy-MM-dd HH:mm:ss" /> --%>
+														${live_orderVO.zipcode}${live_orderVO.city}${live_orderVO.town}${live_orderVO.rec_addr}		
 														</td>
-														<td><fmt:formatDate
-																value="${live_orderVO.pay_deadline}"
-																pattern="yyyy-MM-dd HH:mm:ss" /></td>
 														<td>${(live_orderVO.order_state==0)? '未付款':''}
 															${(live_orderVO.order_state==1)? '已付款':''}
 															${(live_orderVO.order_state==2)? '棄單':''}</td>
@@ -310,6 +252,8 @@ table td, table tr, table th {
 						</div>
 
 					</div>
+
+
 				</div>
 			</div>
 		</div>

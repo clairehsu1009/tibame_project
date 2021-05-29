@@ -90,7 +90,8 @@
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
      				 <th scope="col">價格</th>
-     				 <th scope="col">數量</th>
+     				 <th scope="col">剩餘數量</th>
+     				 <th scope="col">已售數量</th>
      				 <th scope="col">商品種類</th>
      				 <th scope="col">賣家帳號</th>
   				  </tr>
@@ -100,11 +101,16 @@
    				 	<c:if test="${productVO.product_state == 0}"> 
    				 <tr>
      				 <th scope="row">${productVO.product_no}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
       				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
      				 <td>${productVO.product_remaining}</td>
+     				 <td>${productVO.product_sold}</td>
      				 <td>${product_typeSvc.getOneProduct_Type(productVO.pdtype_no).pdtype_name}</td>
      				 <td>${productVO.user_id}</td>
    				 </tr>
@@ -122,7 +128,8 @@
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
      				 <th scope="col">價格</th>
-     				 <th scope="col">數量</th>
+     				 <th scope="col">剩餘數量</th>
+     				 <th scope="col">已售數量</th>
      				 <th scope="col">商品種類</th>
      				 <th scope="col">賣家帳號</th>
   				  </tr>
@@ -132,11 +139,16 @@
    				 	<c:if test="${productVO.product_state == 1}"> 
    				 <tr>
      				 <th scope="row">${productVO.product_no}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
       				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
      				 <td>${productVO.product_remaining}</td>
+     				 <td>${productVO.product_sold}</td>
      				 <td>${product_typeSvc.getOneProduct_Type(productVO.pdtype_no).pdtype_name}</td>
      				 <td>${productVO.user_id}</td>
    				 </tr>
@@ -165,7 +177,11 @@
    				 	<c:if test="${productVO.product_state == 3}"> 
    				 <tr>
      				 <th scope="row">${productVO.product_no}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
       				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
@@ -196,7 +212,11 @@
    				 	<c:if test="${productVO.product_state == 5}"> 
    				 <tr>
      				 <th scope="row">${productVO.product_no}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
      				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td></td>

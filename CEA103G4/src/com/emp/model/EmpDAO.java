@@ -39,7 +39,7 @@ public class EmpDAO implements EmpDAO_interface {
 	private static final String GET_ALL_STMT = "SELECT EMPNO,ENAME,JOB,ID,GENDER,DOB,CITY,DIST,ADDR,EMAIL,SAL,STATE,HIREDATE,EMP_PWD FROM EMP ORDER BY EMPNO";
 	private static final String GET_ONE_STMT = "SELECT EMPNO,ENAME,JOB,ID,GENDER,DOB,CITY,DIST,ADDR,EMAIL,SAL,STATE,HIREDATE,EMP_PWD FROM EMP WHERE EMPNO = ?";
 	private static final String DELETE = "DELETE FROM EMP WHERE EMPNO = ?";
-	private static final String UPDATE = "UPDATE EMP SET ENAME=?, JOB=?, ID=?, GENDER=?, DOB=?, CITY=?, DIST=?, ADDR=?,EMAIL=?, SAL=?, STATE=?, HIREDATE=?, EMP_PWD=? WHERE EMPNO = ?";
+	private static final String UPDATE = "UPDATE EMP SET ENAME=?, JOB=?, ID=?, GENDER=?, DOB=?, CITY=?, DIST=?, ADDR=?,EMAIL=?, SAL=?, STATE=?, HIREDATE=? WHERE EMPNO = ?";
 	private static final String SIGN_IN = "SELECT EMPNO,EMP_PWD,ENAME,STATE FROM EMP WHERE BINARY EMPNO=? AND BINARY EMP_PWD=?";
 	private static final String UPDATE_EMP_PWD = "UPDATE EMP SET EMP_PWD=? WHERE EMPNO = ?";
 	private static final String GET_EMP_BY_EMAIL = "SELECT EMPNO,ENAME,EMAIL FROM EMP WHERE EMAIL=?";
@@ -119,8 +119,7 @@ public class EmpDAO implements EmpDAO_interface {
 			pstmt.setDouble(10, empVO.getSal());
 			pstmt.setInt(11, empVO.getState());
 			pstmt.setDate(12, empVO.getHiredate());
-			pstmt.setString(13, empVO.getEmp_pwd());
-			pstmt.setInt(14, empVO.getEmpno());
+			pstmt.setInt(13, empVO.getEmpno());
 
 			pstmt.executeUpdate();
 

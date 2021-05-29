@@ -26,18 +26,11 @@ public class Live_reportService {
 		return live_reportVO;
 	}
 
-	public Live_reportVO updateLive_report(Integer live_report_no, String live_report_content, Integer live_no, String user_id, Integer empno,
-			Integer live_report_state, byte[] photo ) {
+	public Live_reportVO updateLive_report(Integer live_report_no,Integer live_report_state) {
 		Live_reportVO live_reportVO = new Live_reportVO();
 
 		live_reportVO.setLive_report_no(live_report_no);
-		live_reportVO.setLive_report_content(live_report_content);
-		live_reportVO.setLive_no(live_no);
-		live_reportVO.setUser_id(user_id);
-		live_reportVO.setEmpno(empno);
 		live_reportVO.setLive_report_state(live_report_state);
-		live_reportVO.setPhoto(photo);
-		
 
 		dao.update(live_reportVO);
 		return live_reportVO;

@@ -1,6 +1,7 @@
 package com.auth.model;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class AuthService {
@@ -49,7 +50,11 @@ public class AuthService {
 		dao.findAuthAllValues(authVO);
 		return authVO;
 	}
-
+	
+	public Set<AuthVO> getAllAuthByFunno(Integer funno) {
+		return dao.findAuthByFunno(funno);
+	}
+	
 	public List<AuthVO> getAll() {
 		return dao.getAll();
 	}

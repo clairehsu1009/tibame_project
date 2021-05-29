@@ -32,19 +32,26 @@ public class FriendChatWS {
 		/* save the new user in the map */
 		sessionsMap.put(user_id, userSession);
 		/* Sends all the connected users to the new user */
-		Set<String> user_ids = sessionsMap.keySet();
-		State stateMessage = new State("open", user_id, user_ids);
+		
+		Set<String> onlineUser_ids = sessionsMap.keySet();//線上的使用者
+		Set<String> user_ids = JedisHandleMessage.getFriendList(user_id); //偽好友名單
+		
+		State stateMessage = new State("open", user_id, user_ids, onlineUser_ids);
+		
 		String stateMessageJson = gson.toJson(stateMessage);
+		
 		Collection<Session> sessions = sessionsMap.values();
 		for (Session session : sessions) {
-//			if (session.isOpen()) {
-				session.getAsyncRemote().sendText(stateMessageJson);
-//			}
+				if (session.isOpen()) {
+					session.getAsyncRemote().sendText(stateMessageJson);
+					System.out.println(stateMessageJson);
+				}
 		}
-
+		
 		String text = String.format("Session ID = %s, connected; user_id = %s%nusers: %s", userSession.getId(),
 				user_id, user_ids);
 		System.out.println(text);
+		
 	}
 
 	@OnMessage
@@ -52,25 +59,26 @@ public class FriendChatWS {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 		String sender = chatMessage.getSender();
 		String receiver = chatMessage.getReceiver();
-		
 		if ("history".equals(chatMessage.getType())) {
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
 			String historyMsg = gson.toJson(historyData);
 			ChatMessage cmHistory = new ChatMessage("history", sender, receiver, historyMsg);
-//			if (userSession != null && userSession.isOpen()) {
+			if (userSession != null && userSession.isOpen()) {
 				userSession.getAsyncRemote().sendText(gson.toJson(cmHistory));
 				System.out.println("history = " + gson.toJson(cmHistory));
 				return;
-//			}
+			}
 		}
 		
-		
 		Session receiverSession = sessionsMap.get(receiver);
-//		if (receiverSession != null && receiverSession.isOpen()) {
+		if (receiverSession != null && receiverSession.isOpen()) {
 			receiverSession.getAsyncRemote().sendText(message);
 			userSession.getAsyncRemote().sendText(message);
 			JedisHandleMessage.saveChatMessage(sender, receiver, message);
-//		}
+		}else {
+			userSession.getAsyncRemote().sendText(message);
+			JedisHandleMessage.saveChatMessage(sender, receiver, message);
+		}
 		System.out.println("Message received: " + message);
 	}
 
@@ -82,6 +90,7 @@ public class FriendChatWS {
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
 		String user_idClose = null;
+		Set<String> offline_users = null;
 		Set<String> user_ids = sessionsMap.keySet();
 		for (String user_id : user_ids) {
 			if (sessionsMap.get(user_id).equals(userSession)) {
@@ -92,7 +101,7 @@ public class FriendChatWS {
 		}
 
 		if (user_idClose != null) {
-			State stateMessage = new State("close", user_idClose, user_ids);
+			State stateMessage = new State("close", user_idClose, user_ids, offline_users);
 			String stateMessageJson = gson.toJson(stateMessage);
 			Collection<Session> sessions = sessionsMap.values();
 			for (Session session : sessions) {

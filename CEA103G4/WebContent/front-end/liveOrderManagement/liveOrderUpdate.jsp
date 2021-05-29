@@ -108,11 +108,10 @@
 						</tr>
 						<tr>
 							<td>物流方式:</td>
-							<td><select name="logistics" class="form-control"
-								id="logistics">
-									<option value="0" ${(live_orderVO.logistics==0)? 'selected':''}>宅配</option>
-									<option value="1" ${(live_orderVO.logistics==1)? 'selected':''}>超商</option>
-							</select></td>
+							<td>${(live_orderVO.logistics==0)? '宅配':'超商'}
+							<input type="HIDDEN" name="logistics" id="order_shipping"
+								size="45" value="<%=live_orderVO.getLogistics()%>" />
+							</td>
 						</tr>
 						<tr>
 							<td>運費:</td>
@@ -150,14 +149,12 @@
 						</tr>
 						<tr>
 							<td>付款方式:</td>
-							<td><select name="pay_method" class="form-control">
-									<option value="0"
-										${(live_orderVO.pay_method==0)? 'selected':''}>錢包</option>
-									<option value="1"
-										${(live_orderVO.pay_method==1)? 'selected':''}>信用卡</option>
-									<option value="2"
-										${(live_orderVO.pay_method==2)? 'selected':''}>轉帳</option>
-							</select></td>
+							<td>${(live_orderVO.pay_method==0)? '錢包':''}
+								${(live_orderVO.pay_method==1)? '信用卡':''}
+								${(live_orderVO.pay_method==2)? '轉帳':''}
+								<input
+								type="HIDDEN" name="pay_method" class="form-control"
+								size="45" value="<%=live_orderVO.getPay_method()%>" /></td>
 						</tr>
 
 						<tr>

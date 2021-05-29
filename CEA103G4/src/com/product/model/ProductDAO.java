@@ -33,17 +33,17 @@ public class ProductDAO implements ProductDAO_interface {
 	//新增商品 賣家上架功能
 	private static final String INSERT_STMT = "INSERT INTO PRODUCT (product_name,product_info,product_price,product_remaining,product_state,product_photo,user_id,pdtype_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	//查詢所有商品(後台/賣家查詢使用)
-	private static final String GET_ALL_STMT = "SELECT product_no,product_name,product_info,product_price,product_quantity,product_remaining,product_state,product_photo,user_id,pdtype_no,start_price,live_no FROM PRODUCT order by product_no";	
-	private static final String GET_ONE_STMT = "SELECT product_no,product_name,product_info,product_price,product_quantity,product_remaining,product_state,product_photo,user_id,pdtype_no,start_price,live_no FROM PRODUCT where product_no = ?";
+	private static final String GET_ALL_STMT = "SELECT product_no,product_name,product_info,product_price,product_quantity,product_remaining,product_sold,product_state,user_id,pdtype_no,start_price,live_no FROM PRODUCT order by product_no";	
+	private static final String GET_ONE_STMT = "SELECT * FROM PRODUCT where product_no = ?";
 	//刪除商品 賣家使用
 	private static final String DELETE = "DELETE FROM PRODUCT where product_no = ?";
 	//修改商品 賣家使用
 	private static final String UPDATE = "UPDATE PRODUCT set product_name=?, product_info=?, product_price=?,product_remaining=?, product_state=?, product_photo=?, user_id=?, pdtype_no=? where product_no = ?";
 	private static final String GET_ALLJSON = "SELECT product_no,product_name,product_info,product_price,product_quantity,product_remaining,product_state,user_id,pdtype_no,start_price,live_no FROM PRODUCT order by product_no";
 	//修改商品 買家使用
-	private static final String UPDATE_REMAINING = "UPDATE PRODUCT set product_remaining=?, product_state=? where product_no = ?";
+	private static final String UPDATE_REMAINING = "UPDATE PRODUCT set product_remaining=?, product_sold=?, product_state=? where product_no = ?";
 	
-	//後台檢舉通過,狀態改為檢舉下架
+	//後台檢舉通過,狀態改為檢舉下架 or 商品狀態修改
 	private static final String UPDATESTATE = "UPDATE PRODUCT set product_state=? where product_no = ?";
 	//設定商品為直播並帶入直播編號
 	private static final String UPDATELIVE = "UPDATE PRODUCT SET PRODUCT_STATE=2 , LIVE_NO=? WHERE PRODUCT_NO = ?";
@@ -265,6 +265,7 @@ public class ProductDAO implements ProductDAO_interface {
 				productVO.setProduct_price(rs.getInt("product_price"));
 				productVO.setProduct_quantity(rs.getInt("product_quantity"));
 				productVO.setProduct_remaining(rs.getInt("product_remaining"));
+				productVO.setProduct_sold(rs.getInt("product_sold"));
 				productVO.setProduct_state(rs.getInt("product_state"));
 				productVO.setProduct_photo(rs.getBytes("product_photo"));
 				productVO.setUser_id(rs.getString("user_id"));
@@ -327,8 +328,8 @@ public class ProductDAO implements ProductDAO_interface {
 				productVO.setProduct_price(rs.getInt("product_price"));
 				productVO.setProduct_quantity(rs.getInt("product_quantity"));
 				productVO.setProduct_remaining(rs.getInt("product_remaining"));
+				productVO.setProduct_sold(rs.getInt("product_sold"));
 				productVO.setProduct_state(rs.getInt("product_state"));
-				productVO.setProduct_photo(rs.getBytes("product_photo"));
 				productVO.setUser_id(rs.getString("user_id"));
 				productVO.setPdtype_no(rs.getInt("pdtype_no"));
 				productVO.setStart_price(rs.getInt("start_price"));
@@ -770,8 +771,9 @@ public class ProductDAO implements ProductDAO_interface {
 			pstmt = con.prepareStatement(UPDATE_REMAINING);
 
 			pstmt.setInt(1, productVO.getProduct_remaining());
-			pstmt.setInt(2, productVO.getProduct_state());
-			pstmt.setInt(3, productVO.getProduct_no());
+			pstmt.setInt(2, productVO.getProduct_sold());
+			pstmt.setInt(3, productVO.getProduct_state());
+			pstmt.setInt(4, productVO.getProduct_no());
 
 			pstmt.executeUpdate();
 			
@@ -1017,5 +1019,49 @@ public class ProductDAO implements ProductDAO_interface {
 			}
 		}
 		return productVO;
+	}
+
+@Override
+public void updateState(Integer product_state , List<ProductVO> list) {
+	
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATESTATE);
+			
+			
+			for (ProductVO aProduct : list) {
+				pstmt.setInt(1, product_state);
+				pstmt.setInt(2, aProduct.getProduct_no());
+				pstmt.addBatch();
+			}
+			
+			pstmt.executeBatch();
+
+			// Handle any driver errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+
 	}
 }

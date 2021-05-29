@@ -13601,7 +13601,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .app-sidebar__toggle {
-  padding: 16px 30px 8px 10px;
+  padding: 16px 10px 8px 10px;
   font-family: fontAwesome;
   color: #fff;
   line-height: 4;
@@ -15330,13 +15330,13 @@ margin-top:10px;
 	display:none;
 }
 
-.productsAdd #upload-img .fa.fa-camera {
+.productsAdd #upload-img .fa.fa-file-picture-o {
 font-weight: bold;
-font-size: 450%;
+font-size: 700%;
 position: absolute;
 left: 0;
 width: 100%;
-top: 36%;
+top: 30%;
 }
 
 .productsAdd .delAvatar {
@@ -15481,6 +15481,7 @@ max-height:100%;
     box-shadow: none;
 
 }
+
 .productList .form-control {
 	border: none;
 	background:white;
@@ -15504,6 +15505,87 @@ max-height:100%;
 .productList .btn.btn-danger{
 	margin-top:10px;
 }
+.productList .fix-container{
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: white;
+    -webkit-box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 5%);
+    box-shadow: 0 -2px 6px 0 rgb(0 0 0 / 10%);
+    width: 220px;
+    height: 64px;
+    border-radius: 10px;
+}
+.productList .choseAll {
+	margin-left: 30px;
+}
+    
+
+.productList .choseAll label {
+  position: relative;
+  cursor: pointer;
+  padding-left: 28px;
+}
+
+.productList .choseAll label input, .productList .chose label input {
+  position: absolute;
+  visibility: hidden;
+}
+
+.productList .choseAll label input:checked ~ span, .productList .chose label input:checked ~ span {
+  background: #e7ab3c;
+  border-color: #e7ab3c;
+}
+
+.productList .choseAll label .checkmark, .productList .chose label .checkmark {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  height: 15px;
+  width: 15px;
+  border: 2px solid #ebebeb;
+  border-radius: 2px;
+}
+
+.productList .choseAll label .checkmark:after, .productList .chose label .checkmark:after {
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 8px;
+  border: solid white;
+  border-width: 3px 3px 0px 0px;
+  -webkit-transform: rotate(127deg);
+  -ms-transform: rotate(127deg);
+  transform: rotate(127deg);
+}
+
+.checkmark:after {
+  position: absolute;
+  content: "";
+}
+
+.productList .chose {
+    margin-left: 0px;
+}
+.productList .chose label {
+    position: relative;
+    cursor: pointer;
+    padding-left: 0px;
+    height: 8px;
+}
+.productList .btn.btn-warning {
+   color: white;
+   margin-left: 30px;
+}
+.productList .btn.btn-info{
+	margin-top:10px;
+}
 								
 								/*productListFinsh*/
 /*userIndex*/
@@ -15522,12 +15604,29 @@ max-height:100%;
 								
 /*media*/
 
+@media only screen and (min-width: 1200px) {
+	
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+	
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+	
+}
+
+
 @media (max-width: 576px) {
 .header-section .logo{
     float: left;
-    width: 33%;
+    width: 32%;
     height: 100%;
-    padding: 0px 4%;
+    padding: 0px 0%;
     box-sizing: border-box;
     font-size: 700;
     display: block;
@@ -15558,7 +15657,7 @@ min-width: 100%;
 }
 .app-nav__item {
     display: block;
-    padding: 10px;
+    padding: 7px;
     line-height: 20px;
     color: #fff;
     -webkit-transition: background-color 0.3s ease;
@@ -15570,21 +15669,21 @@ min-width: 100%;
     font-size: 16px;
     padding-right: 5px;
 }
+.productsAdd {
+    margin-left: 15px;
+    box-sizing: border-box;
 }
-@media only screen and (max-width: 767px) {
-	
+.productList {
+    margin-top: -18px;
+    overflow-x: auto;
+}
+.productList .tab-item ul li a {
+	padding: 18px 27px;
+}
+.productList .table, .productList .thead {
+    white-space: nowrap;
 }
 
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-	
-}
-
-@media only screen and (max-width: 991px) {
-	
-}
-
-@media only screen and (min-width: 1200px) {
-	
 }
 
 /*mediaFinish*/

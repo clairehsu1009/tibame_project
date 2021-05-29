@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 import com.qa.model.*;
 
+@WebServlet("/QaServlet")
 public class QaServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
@@ -133,15 +136,22 @@ public class QaServlet extends HttpServlet {
 				
 				java.sql.Date qa_date = null;
 				try {
-qa_date = java.sql.Date.valueOf(req.getParameter("qa_date").trim());
+					qa_date = java.sql.Date.valueOf(req.getParameter("qa_date").trim());
 				} catch (IllegalArgumentException e) {
 					qa_date =new java.sql.Date(System.currentTimeMillis());
 					errorMsgs.add("請輸入日期!");
 				}
 
-String qa_content = req.getParameter("qa_content").trim();
-				if (qa_content == null || qa_content.trim().length() == 0) {
-					errorMsgs.add("Q&A內容請勿空白");
+				Integer qa_type = new Integer(req.getParameter("qa_type").trim());
+				
+				String question = req.getParameter("question").trim();
+				if (question == null || question.trim().length() == 0) {
+					errorMsgs.add("Q&A問題請勿空白");
+				}	
+				
+				String answer = req.getParameter("answer").trim();
+				if (answer == null || answer.trim().length() == 0) {
+					errorMsgs.add("Q&A回答請勿空白");
 				}			
 				
 				QaVO qaVO = new QaVO();
@@ -149,7 +159,9 @@ String qa_content = req.getParameter("qa_content").trim();
 				qaVO.setQa_no(qa_no);
 				qaVO.setEmpno(empno);
 				qaVO.setQa_date(qa_date);
-				qaVO.setQa_content(qa_content);
+				qaVO.setQa_type(qa_type);
+				qaVO.setQuestion(question);
+				qaVO.setAnswer(answer);
 				
 				// Send the use back to the form, if there were errors
 				if (!errorMsgs.isEmpty()) {
@@ -163,11 +175,11 @@ String qa_content = req.getParameter("qa_content").trim();
 				/***************************2.開始修改資料*****************************************/
 				QaService qaSvc = new QaService();
 				
-				qaVO = qaSvc.updateQa(qa_no, empno, qa_date, qa_content);
+				qaVO = qaSvc.updateQa(qa_no, empno, qa_date, qa_type, question, answer);
 				
 				/***************************3.修改完成,準備轉交(Send the Success view)*************/
 				req.setAttribute("qaVO", qaVO); // 資料庫update成功後,正確的的qaVO物件,存入req
-				String url = "/back-end/qa/listOneQa.jsp";
+				String url = "/back-end/qa/listAllQa.jsp";
 				RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneQa.jsp
 				successView.forward(req, res);
 				
@@ -199,16 +211,25 @@ String qa_content = req.getParameter("qa_content").trim();
 					errorMsgs.add("請輸入日期!");
 				}
 				
-				String qa_content = req.getParameter("qa_content");
-				if (qa_content == null || qa_content.trim().length() == 0) {
-					errorMsgs.add("Q&A內容請勿空白");
+				Integer qa_type = new Integer(req.getParameter("qa_type").trim());
+				
+				String question = req.getParameter("question").trim();
+				if (question == null || question.trim().length() == 0) {
+					errorMsgs.add("Q&A問題請勿空白");
+				}	
+				
+				String answer = req.getParameter("answer").trim();
+				if (answer == null || answer.trim().length() == 0) {
+					errorMsgs.add("Q&A回答請勿空白");
 				}
 				
 				QaVO qaVO = new QaVO();
 				
 				qaVO.setEmpno(empno);
 				qaVO.setQa_date(qa_date);
-				qaVO.setQa_content(qa_content);
+				qaVO.setQa_type(qa_type);
+				qaVO.setQuestion(question);
+				qaVO.setAnswer(answer);
 
 				// Send the use back to the form, if there were errors
 				if (!errorMsgs.isEmpty()) {
@@ -220,8 +241,8 @@ String qa_content = req.getParameter("qa_content").trim();
 				}
 				
 				/***************************2.開始新增資料***************************************/
-QaService qaSvc = new QaService();
-qaVO = qaSvc.addQa(empno, qa_date, qa_content);
+				QaService qaSvc = new QaService();
+				qaVO = qaSvc.addQa(empno, qa_date, qa_type, question, answer);
 				
 				/***************************3.新增完成,準備轉交(Send the Success view)***********/
 				String url = "/back-end/qa/listAllQa.jsp";

@@ -7,6 +7,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import com.message.model.*;
+import com.message.websocket.jedis.JedisHandleMessage;
 
 public class MessageServlet extends HttpServlet{
 
@@ -20,7 +21,6 @@ public class MessageServlet extends HttpServlet{
 
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
-		
 		
 		if ("getOne_For_Display".equals(action)) {
 

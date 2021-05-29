@@ -44,4 +44,5 @@ public class ChatMessage {
 	public void setType(String type) {
 		this.type = type;
 	}
+
 }

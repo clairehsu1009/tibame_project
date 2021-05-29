@@ -110,12 +110,11 @@ h3 {
 												<tr id="tr">
 													<th scope="col"><input type="checkbox" id="AllCheck"></th>
 													<th scope="col">#</th>
-													<th scope="col">訂單時間</th>
-													<th scope="col">訂單狀態</th>
+													<th scope="col">訂單日期</th>
 													<th scope="col">訂單金額</th>
-													<th scope="col">付款方式</th>
-													<th scope="col">物流方式</th>
-													<th scope="col">物流狀態</th>
+													<th scope="col">收件人姓名</th>
+													<th scope="col">收件人地址</th>
+													
 													<th></th>
 													<th></th>
 												</tr>
@@ -125,20 +124,13 @@ h3 {
 													items="${orderSvc.getAllByID2(userVO.user_id)}">
 													<c:if test="${orderVO.logisticsstate==0}">
 														<tr>
-															<td><input type="checkbox" name="order_no"
-																value="${orderVO.order_no}"></td>
-															<td>${orderVO.order_no}</td>
+															<td><input type="checkbox" name="order_no" value="${orderVO.order_no}"></td>
+															<td><a href="${pageContext.request.contextPath}/front-end/order/order.do?action=listDetails_ByNo_B&order_no=${orderVO.order_no}">${orderVO.order_no}</a></td>
 															<td><fmt:formatDate value="${orderVO.order_date}"
 																	pattern="yyyy-MM-dd" /></td>
-															<td>${(orderVO.order_state==0)? '未付款':'已付款'}</td>
 															<td>${orderVO.order_price}</td>
-															<td>${(orderVO.pay_method==0)? '錢包':''}
-																${(orderVO.pay_method==1)? '信用卡':''}
-																${(orderVO.pay_method==2)? '轉帳':''}</td>
-															<td>${(orderVO.logistics==0)? '超商':'宅配'}</td>
-															<td>${(orderVO.logisticsstate==0)? '未出貨':''}
-																${(orderVO.logisticsstate==1)? '已出貨':''}
-																${(orderVO.logisticsstate==2)? '已取貨':''}</td>
+															<td>${orderVO.rec_name}</td>
+															<td>${orderVO.zipcode}${orderVO.city}${orderVO.town}${orderVO.rec_addr}</td>
 															<td></td>
 														</tr>
 													</c:if>
@@ -147,6 +139,9 @@ h3 {
 										</table>
 									</div>
 								</FORM>
+								<% if (request.getAttribute("listDetails_ByNo") != null) { %>
+								<jsp:include page="listDetails_ByNo.jsp" />
+								<% 	}  %>
 							</div>
 						</div>
 					</div>
@@ -161,20 +156,17 @@ h3 {
 									<div class="tile">
 										<h3 class="tile-title">我的已出貨商品</h3>
 										<div id="change">
-											<input type="submit" class="btn btn-info" value="取消出貨">
-											<input type="hidden" name="action" value="unshipped">
+<!-- 											<input type="submit" class="btn btn-info" value="取消出貨"> -->
+<!-- 											<input type="hidden" name="action" value="unshipped"> -->
 										</div>
 										<table class="table table-hover">
 											<thead>
 												<tr>
-													<th scope="col"><input type="checkbox" id="AllCheck"></th>
+<!-- 													<th scope="col"><input type="checkbox" id="AllCheck"></th> -->
 													<th scope="col">#</th>
 													<th scope="col">訂單時間</th>
-													<th scope="col">訂單狀態</th>
 													<th scope="col">訂單金額</th>
-													<th scope="col">付款方式</th>
 													<th scope="col">物流方式</th>
-													<th scope="col">物流狀態</th>
 													<th></th>
 													<th></th>
 												</tr>
@@ -184,20 +176,13 @@ h3 {
 													items="${orderSvc.getAllByID2(userVO.user_id)}">
 													<c:if test="${orderVO.logisticsstate==1}">
 														<tr>
-															<td><input type="checkbox" name="order_no"
-																value="${orderVO.order_no}"></td>
-															<td>${orderVO.order_no}</td>
+<!-- 															<td><input type="checkbox" name="order_no" -->
+<%-- 																value="${orderVO.order_no}"></td> --%>
+															<td><a href="${pageContext.request.contextPath}/front-end/order/order.do?action=listDetails_ByNo_B&order_no=${orderVO.order_no}">${orderVO.order_no}</a></td>
 															<td><fmt:formatDate value="${orderVO.order_date}"
 																	pattern="yyyy-MM-dd" /></td>
-															<td>${(orderVO.order_state==0)? '未付款':'已付款'}</td>
 															<td>${orderVO.order_price}</td>
-															<td>${(orderVO.pay_method==0)? '錢包':''}
-																${(orderVO.pay_method==1)? '信用卡':''}
-																${(orderVO.pay_method==2)? '轉帳':''}</td>
 															<td>${(orderVO.logistics==0)? '超商':'宅配'}</td>
-															<td>${(orderVO.logisticsstate==0)? '未出貨':''}
-																${(orderVO.logisticsstate==1)? '已出貨':''}
-																${(orderVO.logisticsstate==2)? '已取貨':''}</td>
 															<td></td>
 														</tr>
 													</c:if>
@@ -225,11 +210,9 @@ h3 {
 													<th scope="col">訂單時間</th>
 													<th scope="col">訂單狀態</th>
 													<th scope="col">訂單金額</th>
-													<th scope="col">付款方式</th>
-													<th scope="col">物流方式</th>
-													<th scope="col">物流狀態</th>
-													<th></th>
-													<th></th>
+													<th scope="col">買家帳號</th>
+													<th scope="col">買家評價</th>
+													<th scope="col">評價內容</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -237,19 +220,56 @@ h3 {
 													items="${orderSvc.getAllByID2(userVO.user_id)}">
 													<c:if test="${orderVO.logisticsstate==2}">
 														<tr>
-															<td>${orderVO.order_no}</td>
+															<td><a href="${pageContext.request.contextPath}/front-end/order/order.do?action=listDetails_ByNo_B&order_no=${orderVO.order_no}">${orderVO.order_no}</a></td>
 															<td><fmt:formatDate value="${orderVO.order_date}"
 																	pattern="yyyy-MM-dd" /></td>
 															<td>${(orderVO.order_state==0)? '未付款':'已付款'}</td>
 															<td>${orderVO.order_price}</td>
-															<td>${(orderVO.pay_method==0)? '錢包':''}
-																${(orderVO.pay_method==1)? '信用卡':''}
-																${(orderVO.pay_method==2)? '轉帳':''}</td>
-															<td>${(orderVO.logistics==0)? '超商':'宅配'}</td>
-															<td>${(orderVO.logisticsstate==0)? '未出貨':''}
-																${(orderVO.logisticsstate==1)? '已出貨':''}
-																${(orderVO.logisticsstate==2)? '已取貨':''}</td>
-															<td></td>
+															<td>${orderVO.user_id}</td>
+															<td>
+																<c:if test="${orderVO.srating == 1}">
+														  <ion-icon name="star" class="star" id="st1" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st2" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st3" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st4" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st5" style="font-size: 15px;"></ion-icon>
+														</c:if>
+														<c:if test="${orderVO.srating == 2}">
+														  <ion-icon name="star" class="star" id="st1" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st2" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st3" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st4" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st5" style="font-size: 15px;"></ion-icon>
+														</c:if>
+														<c:if test="${orderVO.srating == 3}">
+														  <ion-icon name="star" class="star" id="st1" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st2" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st3" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st4" style="font-size: 15px;"></ion-icon>
+														  <ion-icon name="star" class="star" id="st5" style="font-size: 15px;"></ion-icon>
+														</c:if>
+														<c:if test="${orderVO.srating == 4}">
+														  <ion-icon name="star" class="star" id="st1" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st2" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st3" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st4" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st5" style="font-size: 15px;"></ion-icon>
+														</c:if>
+														<c:if test="${orderVO.srating == 5}">
+														  <ion-icon name="star" class="star" id="st1" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st2" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st3" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st4" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														  <ion-icon name="star" class="star" id="st5" style="font-size: 15px; color:#f6d04d"></ion-icon>
+														</c:if>
+<%-- 															  <input type="hidden" name="srating" value="${orderVO.srating}" id="con2"/> --%>
+<!-- 								                        	  <ion-icon name="star" class="star" id="st1" style="font-size: 15px;"></ion-icon> -->
+<!-- 															  <ion-icon name="star" class="star" id="st2" style="font-size: 15px;"></ion-icon> -->
+<!-- 															  <ion-icon name="star" class="star" id="st3" style="font-size: 15px;"></ion-icon> -->
+<!-- 															  <ion-icon name="star" class="star" id="st4" style="font-size: 15px;"></ion-icon> -->
+<!-- 															  <ion-icon name="star" class="star" id="st5" style="font-size: 15px;"></ion-icon> -->
+															</td>
+															<td>${orderVO.srating_content}</td>
 														</tr>
 													</c:if>
 												</c:forEach>
@@ -294,6 +314,25 @@ h3 {
 	<script type="text/javascript"
 		src="<%=request.getContextPath()%>/back-template/docs/js/plugins/chart.js"></script>
 	<script>
+// 	switch($("#con2").val()){
+//         		case "1":
+//         			$("#st1").css("color","#f6d04d");
+//         			break;
+//         		case "2":
+//         			$("#st1,#st2").css("color","#f6d04d");
+//         			break;
+//         		case "3":
+//         			$("#st1,#st2,#st3").css("color","#f6d04d");
+//         			break;
+//         		case "4":
+//         			$("#st1,#st2,#st3,#st4").css("color","#f6d04d");
+//         			break;
+//         		case "5":
+//         			$("#st1,#st2,#st3,#st4,#st5").css("color","#f6d04d");
+//         			break;
+//         		default:
+//         			$("#st1,#st2,#st3,#st4,#st5").css("color","black");
+//         		}
 	$(document).ready(function(){
 		$("#AllCheck").change(function() {
 			if ($("#AllCheck").is(":checked")) {
@@ -304,5 +343,6 @@ h3 {
 		});
 	})
 	</script>
+	<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 </body>
 </html>

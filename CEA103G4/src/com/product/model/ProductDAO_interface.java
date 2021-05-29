@@ -27,4 +27,5 @@ public interface ProductDAO_interface {
           public void offShelf(List<ProductVO> list);
           public List<ProductVO> getSellerProducts(String user_id);
           public ProductVO getFavorite(Integer product_no);
+          public void updateState(Integer product_state, List<ProductVO> list);
 }

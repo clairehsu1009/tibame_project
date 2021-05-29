@@ -14,6 +14,7 @@ public class ProductVO implements java.io.Serializable{
 	private Integer product_price;
 	private Integer product_quantity;
 	private Integer product_remaining;
+	private Integer product_sold;
 	private Integer product_state;
 	private byte[] product_photo;
 	private String user_id;
@@ -60,6 +61,12 @@ public class ProductVO implements java.io.Serializable{
 	}
 	public void setProduct_remaining(Integer product_remaining) {
 		this.product_remaining = product_remaining;
+	}
+	public Integer getProduct_sold() {
+		return product_sold;
+	}
+	public void setProduct_sold(Integer product_sold) {
+		this.product_sold = product_sold;
 	}
 	public Integer getProduct_state() {
 		return product_state;

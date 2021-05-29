@@ -13,9 +13,9 @@ public class NameServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		String userName = req.getParameter("userName");
+		String empName = req.getParameter("empName");
 		
-		req.setAttribute("userName", userName);
+		req.setAttribute("empName", empName);
 		String url = "/back-end/customer_service/chat.jsp";
 		RequestDispatcher dispatcher = req.getRequestDispatcher(url);
 		dispatcher.forward(req, res);

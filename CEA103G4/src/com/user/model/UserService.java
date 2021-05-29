@@ -138,10 +138,8 @@ public UserVO newPassword_Update(String user_id,String user_newNameCheck) {
 		return userVO;
 	}
 	
-
 	public UserVO updateUserRating(Integer user_comment,Integer comment_total,String user_id) {
 		UserVO userVO = new UserVO();
-		
 		userVO.setUser_comment(user_comment);
 		userVO.setComment_total(comment_total);		
 		userVO.setUser_id(user_id);
@@ -149,11 +147,9 @@ public UserVO newPassword_Update(String user_id,String user_newNameCheck) {
 		dao.updateUserRating(userVO);
 		return userVO;
 	}
-	
 	public Optional<UserVO> getUserPic(String user_id){
 		return dao.findUserPic(user_id);
-
-	}
+	}	
 	
 	public UserVO updateCash(Integer cash,String user_id) {
 		UserVO userVO = new UserVO();
@@ -162,4 +158,16 @@ public UserVO newPassword_Update(String user_id,String user_newNameCheck) {
 		dao.updateCash(userVO);
 		return userVO;
 	}
+	public UserVO addCash(Integer cash,String user_id) {
+		UserVO userVO = new UserVO();
+		userVO.setCash(cash);
+		userVO.setUser_id(user_id);
+		dao.addCash(userVO);
+		return userVO;
+	}
+	
+	public void updateUserViolation(String user_id, Integer violation) {
+		dao.updateUserViolation(user_id, violation);
+	}
+	
 }

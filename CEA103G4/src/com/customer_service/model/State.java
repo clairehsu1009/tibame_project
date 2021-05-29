@@ -9,6 +9,10 @@ public class State {
 	// total users
 	private Set<String> users;
 
+	public State() {
+		super();
+	}
+	
 	public State(String type, String user, Set<String> users) {
 		super();
 		this.type = type;

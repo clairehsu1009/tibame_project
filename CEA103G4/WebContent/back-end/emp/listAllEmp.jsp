@@ -107,7 +107,7 @@
 				<td class="table-warning">${empVO.job}</td>
 <%-- 				<td >${empVO.id}</td>	 --%>
 				<c:choose>
-					<c:when test="${empVO.gender==0}">
+					<c:when test="${empVO.gender==2}">
 						<td class="table-success">女</td>
 					</c:when>
 					<c:when test="${empVO.gender==1}">

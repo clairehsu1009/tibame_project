@@ -6,11 +6,14 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import com.ad.model.AdDAO;
 import com.auth.model.AuthService;
 import com.auth.model.AuthVO;
 import com.emp.model.*;
 import com.fun.model.FunService;
 import com.fun.model.FunVO;
+import com.user.model.UserService;
+import com.user.model.UserVO;
 
 public class EmpServlet extends HttpServlet {
 
@@ -131,14 +134,46 @@ public class EmpServlet extends HttpServlet {
 
 				Integer gender = new Integer(req.getParameter("gender"));
 
+//				String id = req.getParameter("id");
+//				String idReg = "^[a-zA-Z]{1}[1-2]{1}[0-9]{8}$";
+//				if (id == null || id.trim().length() == 0) {
+//					errorMsgs.add("身份證字號請勿空白");
+//				} else if (!id.trim().matches(idReg)) {
+//					errorMsgs.add("身份證字號不正確");
+//				}
+				
 				String id = req.getParameter("id");
-				String idReg = "^[a-zA-Z]{1}[1-2]{1}[0-9]{8}$";
-				if (id == null || id.trim().length() == 0) {
-					errorMsgs.add("身份證字號請勿空白");
-				} else if (!id.trim().matches(idReg)) {
-					errorMsgs.add("身份證字號不正確");
+				String input_id = id;
+				String checkLetter = "ABCDEFGHJKLMNPQRSTUVWXYZIO"; // 首字身分證英文字母代表之意義排序(小到大)
+				if (input_id.length() == 10) {
+					char[] uc_id = input_id.toUpperCase().toCharArray();
+					int[] idArray = new int[uc_id.length];
+					if (checkLetter.indexOf(uc_id[0]) == -1 || (uc_id[1] != '1' && uc_id[1] != '2')) {
+						errorMsgs.add("身分證格式不正確");
+					}else if(((uc_id[1] == '1' && gender == 2 )||( uc_id[1] == '2' &&  gender == 1 ))) {
+						errorMsgs.add("性別選錯囉");
+					}	
+					else {
+						int sum = 0;
+						idArray[0] = checkLetter.indexOf(uc_id[0]) + 10; // 第一個英文字運算
+						sum += idArray[0] / 10; // 將商數加總
+						idArray[0] %= 10; // 取餘數放回 idArray[0]
+						for (int i = 1; i < 10; i++) // 將身分證後9碼轉成整數(ASCII碼-48)
+							idArray[i] = (int) uc_id[i] - 48;
+						for (int i = 0; i < 9; i++) {
+							idArray[i] *= (9 - i); // 總和 sum += (idArray[0])*9...+ idArray[9]*1)
+							sum += idArray[i];
+						}
+						if ((10 - sum % 10) % 10 != idArray[9]) // 檢查是否相等於檢查碼
+							errorMsgs.add("身分證不正確，請重新輸入！");
+					}
+				}else if (id == null || id.trim().length() == 0) {
+					errorMsgs.add("身分證請勿空白");
 				}
-
+				else {
+					errorMsgs.add("身分證長度不正確！");
+				}
+				
 				java.sql.Date dob = null;
 				try {
 					dob = java.sql.Date.valueOf(req.getParameter("dob").trim());
@@ -170,7 +205,7 @@ public class EmpServlet extends HttpServlet {
 				} else if (!email.trim().matches(emailReg)) { // 以下練習正則(規)表示式(regular-expression)
 					errorMsgs.add("email格式不正確");
 				}
-
+						
 				Double sal = null;
 				try {
 					sal = new Double(req.getParameter("sal").trim());
@@ -192,10 +227,10 @@ public class EmpServlet extends HttpServlet {
 					errorMsgs.add("請輸入到職日!");
 				}
 
-				String empPwd = req.getParameter("emp_pwd");
-				if (empPwd == null || empPwd.trim().length() == 0) {
-					errorMsgs.add("密碼請勿空白");
-				}
+//				String empPwd = req.getParameter("emp_pwd");
+//				if (empPwd == null || empPwd.trim().length() == 0) {
+//					errorMsgs.add("密碼請勿空白");
+//				}
 
 				EmpVO empVO = new EmpVO();
 				empVO.setEmpno(empno);
@@ -211,7 +246,7 @@ public class EmpServlet extends HttpServlet {
 				empVO.setSal(sal);
 				empVO.setState(state);
 				empVO.setHiredate(hiredate);
-				empVO.setEmp_pwd(empPwd);
+//				empVO.setEmp_pwd(empPwd);
 
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("empVO", empVO); // 含有輸入格式錯誤的empVO物件,也存入req
@@ -223,10 +258,10 @@ public class EmpServlet extends HttpServlet {
 				EmpService empSvc = new EmpService();
 				//先修改員工資料
 				empVO = empSvc.updateEmp(empno, ename, job, id, gender, dob, city, dist, addr, email, sal, state,
-						hiredate, empPwd);
+						hiredate);
 				//再修改權限資料
 				empno = empVO.getEmpno();
-//System.out.println("EmpServlet empno 228 ="+empno);
+
 				String auth_nos[] = req.getParameterValues("auth_no");// 新增Emp的同時可以新增Auth並轉交給Auth Table
 				String funnos[] = req.getParameterValues("funno");
 
@@ -275,15 +310,48 @@ public class EmpServlet extends HttpServlet {
 				}
 
 				Integer gender = new Integer(req.getParameter("gender").trim());
-
+//System.out.println("gender = " +gender);
+//				String id = req.getParameter("id");
+//				String idReg = "^[a-zA-Z]{1}[1-2]{1}[0-9]{8}$";
+//				if (id == null || id.trim().length() == 0) {
+//					errorMsgs.add("身份證字號請勿空白");
+//				} else if (!id.trim().matches(idReg)) {
+//					errorMsgs.add("身份證字號不正確");
+//				}
+				
+				// 身分證驗證
 				String id = req.getParameter("id");
-				String idReg = "^[a-zA-Z]{1}[1-2]{1}[0-9]{8}$";
-				if (id == null || id.trim().length() == 0) {
-					errorMsgs.add("身份證字號請勿空白");
-				} else if (!id.trim().matches(idReg)) {
-					errorMsgs.add("身份證字號不正確");
+				String input_id = id;
+				String checkLetter = "ABCDEFGHJKLMNPQRSTUVWXYZIO"; // 首字身分證英文字母代表之意義排序(小到大)
+				if (input_id.length() == 10) {
+					char[] uc_id = input_id.toUpperCase().toCharArray();
+					int[] idArray = new int[uc_id.length];
+					if (checkLetter.indexOf(uc_id[0]) == -1 || (uc_id[1] != '1' && uc_id[1] != '2')) {
+						errorMsgs.add("身分證格式不正確");
+					}else if(((uc_id[1] == '1' && gender == 2 )||( uc_id[1] == '2' &&  gender == 1 ))) {
+						errorMsgs.add("性別選錯囉");
+					}	
+					else {
+						int sum = 0;
+						idArray[0] = checkLetter.indexOf(uc_id[0]) + 10; // 第一個英文字運算
+						sum += idArray[0] / 10; // 將商數加總
+						idArray[0] %= 10; // 取餘數放回 idArray[0]
+						for (int i = 1; i < 10; i++) // 將身分證後9碼轉成整數(ASCII碼-48)
+							idArray[i] = (int) uc_id[i] - 48;
+						for (int i = 0; i < 9; i++) {
+							idArray[i] *= (9 - i); // 總和 sum += (idArray[0])*9...+ idArray[9]*1)
+							sum += idArray[i];
+						}
+						if ((10 - sum % 10) % 10 != idArray[9]) // 檢查是否相等於檢查碼
+							errorMsgs.add("身分證不正確，請重新輸入！");
+					}
+				}else if (id == null || id.trim().length() == 0) {
+					errorMsgs.add("身分證請勿空白");
 				}
-
+				else {
+					errorMsgs.add("身分證長度不正確！");
+				}
+				
 				java.sql.Date dob = null;
 				try {
 					dob = java.sql.Date.valueOf(req.getParameter("dob").trim());
@@ -320,7 +388,21 @@ public class EmpServlet extends HttpServlet {
 				} else if (!email.trim().matches(emailReg)) { // 以下練習正則(規)表示式(regular-expression)
 					errorMsgs.add("email格式不正確");
 				}
-
+				
+				EmpService empSvc = new EmpService();
+				List<EmpVO> emp = empSvc.getAll();
+		
+				// 身分證,信箱是否重複
+				for(int i = 0;i < emp.size();i++) {
+					String ids = emp.get(i).getId();
+					String emails = emp.get(i).getEmail();
+					if(id.equals(ids)) {
+						errorMsgs.add("此身分證重複");
+					}else if(email.equals(emails)) {
+						errorMsgs.add("此Email重複");
+					}
+				}
+				
 				Double sal = null;
 				try {
 					sal = new Double(req.getParameter("sal").trim());
@@ -343,8 +425,8 @@ public class EmpServlet extends HttpServlet {
 				}
 				String empPwd = null;
 
-				EmpService empSvc = new EmpService();
-
+				
+				
 				empPwd = empSvc.getPassword();// dao.service隨機密碼
 
 				EmpVO empVO = new EmpVO();

@@ -2,6 +2,7 @@ package com.live.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,24 +26,44 @@ public class LiveServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		String liveURL = "/front-end/live/liveRoom.jsp";
+		if(req.getParameter("live_no") != null) {
+			
 		Integer live_no = new Integer(req.getParameter("live_no"));
 		LiveService liveSvc = new LiveService();
 		LiveVO liveVO = liveSvc.getOneLive(live_no);
 		req.setAttribute("liveVO", liveVO);
 		req.getRequestDispatcher(liveURL).forward(req, res);
-
+		
 		doPost(req, res);
+		}
 	}
+	
+	
+	private Schedule schedule;
+	
+	public void init() throws ServletException{
+
+		this.schedule = new Schedule();
+	}
+	
+	public void destroy() {
+
+		schedule.cancel();
+	}
+	
 
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		String action = req.getParameter("action");
+		
+		
 
 		if ("getOne_For_Display".equals(action)) { // 來自select_page.jsp的請求
-
 			List<String> errorMsgs = new LinkedList<String>();
 			// Store this set in the request scope, in case we need to
 			// send the ErrorPage view.
@@ -201,7 +222,11 @@ public class LiveServlet extends HttpServlet {
 				LiveService liveSvc = new LiveService();
 				liveVO = liveSvc.updateLive( live_type, live_name, live_time, live_state
 					,user_id,empno, live_photo,live_id,live_no);
-
+				
+				
+				schedule.cancelLiveTask(live_no);
+				schedule.addLiveTask(liveVO);
+				
 				/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 				req.setAttribute("liveVO", liveVO); // 資料庫update成功後,正確的的liveVO物件,存入req
 				String url = "/front-end/liveManagement/liveList.jsp";
@@ -277,7 +302,11 @@ public class LiveServlet extends HttpServlet {
 				/*************************** 2.開始新增資料 ***************************************/
 				LiveService liveSvc = new LiveService();
 				liveVO = liveSvc.addLive(live_type,live_name,live_time,live_state,user_id,empno,live_photo,live_id);
-
+				
+				
+				schedule.addLiveTask(liveVO);
+				
+				
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				String url = "/front-end/liveManagement/liveList.jsp";
 				RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交listAllEmp.jsp
@@ -346,5 +375,9 @@ public class LiveServlet extends HttpServlet {
 				failureView.forward(req, res);
 			}
 		}
+		
+		
+		
 	}
+	
 }

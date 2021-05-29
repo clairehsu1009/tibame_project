@@ -42,50 +42,74 @@ public class FrondEnd_LoginHandler extends HttpServlet {
 			String str = req.getParameter("user_id");
 			String str2 = req.getParameter("user_pwd");
 			if (str == null || (str.trim().length() == 0)) {
-				errorMsgs.put("user_id","請輸入會員帳號");
-			}if(str2 == null || (str2.trim().length() == 0)) {
-				errorMsgs.put("user_pwd","請輸入會員密碼");
+				errorMsgs.put("user_id","*請輸入會員帳號");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/userLogin.jsp");
+				failureView.forward(req, res);
+				return;
 			}
-			UserVO userVO = new UserVO();
-			userVO.setUser_id(str);
-			userVO.setUser_pwd(str2);
 			
-			// 錯誤發生時將內容發送回表單
-			if (!errorMsgs.isEmpty()) {
+			UserService userSvc = new UserService();
+			UserVO userVO = new UserVO();
+			
+			userVO = userSvc.getOneUser(str);
+			
+			if(userVO == null && str.trim().length() != 0) {
+				errorMsgs.put("user_id", "*此帳號尚未註冊");
+				String url = "/front-end/userLogin.jsp";
+				RequestDispatcher failureView = req.getRequestDispatcher(url); 
+				failureView.forward(req, res);
+				return;
+			}
+			
+			if(userVO != null && userVO.getUser_state() == 0) {
+				errorMsgs.put("user_id","*很抱歉，此帳號已被停權無法使用！");
+				String url = "/front-end/userLogin.jsp";
+				RequestDispatcher failureView = req.getRequestDispatcher(url); 
+				failureView.forward(req, res);
+				return;
+			}	
+			
+			if(str2 == null || (str2.trim().length() == 0)) {
+				errorMsgs.put("user_pwd","*請輸入會員密碼");
+			}
+			
+	        //1 獲得使用者輸入的驗證碼
+	        String verifyCode = req.getParameter("verifyCode");
+	        if(verifyCode == null || (verifyCode.trim().length() == 0)){
+	            errorMsgs.put("verifyCode","*請輸入驗證碼");
+	        }
+	        //2 獲得伺服器session 存放資料 ,如果沒有返回null
+	        String sessionCacheData = (String) req.getSession().getAttribute("sessionCacheData");
+	        // *將伺服器快取session資料移除
+	        req.getSession().removeAttribute("sessionCacheData");
+	        // ** 判斷伺服器是否存在
+	        if(sessionCacheData == null){
+	            errorMsgs.put("verifyCode","*請不要重複提交");
+	        }
+	        //3 比較
+	        if(! sessionCacheData.equalsIgnoreCase(verifyCode) && (verifyCode.trim().length() != 0)){
+	            //使用者輸入錯誤
+	            errorMsgs.put("verifyCode","*驗證碼輸入錯誤");
+	        }
+			
+			userVO.setUser_id(str);
+			
+			UserVO user_vo = userSvc.selectUser(str, str2);
+			if(user_vo == null && str2.trim().length() != 0) {
+				errorMsgs.put("user_pwd","*密碼不正確，請重新輸入！");
+				req.setAttribute("userVO", userVO); // 含有輸入格式錯誤的userVO物件,也存入req
+				String url = "/front-end/userLogin.jsp";
+				RequestDispatcher failureView = req.getRequestDispatcher(url); 
+				failureView.forward(req, res);
+				return;
+			}else if(!errorMsgs.isEmpty()) {
 				req.setAttribute("userVO", userVO); // 含有輸入格式錯誤的userVO物件,也存入req
 				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/userLogin.jsp");
 				failureView.forward(req, res);
 				return;
-			} // 程式中斷，回傳當前頁面
-			
-			//會員帳號密碼已是String不需此步驟
-//			Integer empno = null;
-//			try {
-//				empno = new Integer(str);
-//			} catch (Exception e) {
-//				errorMsgs.put("empno","員工帳號格式不正確");
-//			}
-//			empno = new Integer(req.getParameter("account").trim());
-			
-			String user_id = str;
-			
-			String user_pwd = str2;
-			
-			UserService userSvc = new UserService();
-			userVO = userSvc.selectUser(user_id, user_pwd);
-			if(userVO == null) {
-				errorMsgs.put("user_id","帳號或密碼不正確，請重新輸入！");
-				String url = "/front-end/userLogin.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); 
-				successView.forward(req, res);
-			}else if(userVO.getUser_state() == 0) {
-				errorMsgs.put("user_id","很抱歉，此帳號永久停權已無法使用！");
-				String url = "/front-end/userLogin.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); 
-				successView.forward(req, res);
-			}else if(userVO != null) {
+			}else if(user_vo != null) {
 				HttpSession session = req.getSession();
-				session.setAttribute("account", userVO); // *工作1: 才在session內做已經登入過的標識
+				session.setAttribute("account", user_vo); // *工作1: 才在session內做已經登入過的標識
 				try {
 					String location = (String) session.getAttribute("location");
 																  // account == null才有
@@ -98,10 +122,6 @@ public class FrondEnd_LoginHandler extends HttpServlet {
 				}
 				res.sendRedirect(req.getContextPath() + "/front-end/index.jsp"); // *工作3:
 				// (-->如無來源網頁:則重導至首頁)
-			}if(!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/userLogin.jsp");
-				failureView.forward(req, res);
-				return;
 			}
 			}catch (Exception e) {
 				
@@ -119,29 +139,33 @@ public class FrondEnd_LoginHandler extends HttpServlet {
 
 				UserService userSvc = new UserService();
 				userVO = userSvc.selectUser(user_id, user_pwd);
-				if(userVO == null) {
-					errorMsgs.put("user_id","帳號或密碼不正確，請重新輸入！");
+				
 
-				}else if(userVO != null) {
+				if(userVO != null && userVO.getUser_state() == 1) {
 					HttpSession session = req.getSession();
 					session.setAttribute("account", userVO); 
 					
 					res.setContentType("text/html; charset=utf-8");
 					PrintWriter out1 = res.getWriter();
 					
-					JSONObject jsonObj = new JSONObject();
-					
-					try {
-						jsonObj.put("results", userVO);
-					} catch (JSONException e) {
-						e.printStackTrace();
+					JSONObject jsonObj = new JSONObject();					
+						
+						try {
+							jsonObj.put("results", userVO);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						
+						out1.println(jsonObj.toString());
+						out1.flush();
+						out1.close();
+						
+					}else {
+						return;
 					}
-					
-					out1.println(jsonObj.toString());
-					out1.flush();
-					out1.close();
-				}
+
 				}catch (Exception e) {
+					System.out.println("3");
 					return;
 				}
 			}

@@ -21,7 +21,7 @@ public class AuthJDBCDAO implements AuthDAO_interface {
 	private static final String GET_ALL_BY_EMPNO_STMT = "select * from Auth order by EMPNO";
 	private static final String GET_AUTH_ON = "SELECT FUNNO FROM AUTH WHERE EMPNO=? AND AUTH_NO=1";
 	private static final String GET_EMP_BY_EMAIL = "SELECT EMAIL FROM EMP WHERE EMAIL=?";
-	
+	private static final String GET_ONE_BY_FUNNO_STMT = "select FUNNO,EMPNO,AUTH_NO from AUTH where FUNNO = ? ";
 	@Override
 	public void insert(AuthVO authVO) {
 		Connection con = null;
@@ -362,6 +362,7 @@ public class AuthJDBCDAO implements AuthDAO_interface {
 
 //		// 查詢
 //		AuthVO authVO3 = dao.findByPrimeKey(14001,15003);
+
 //		System.out.println(authVO3.getFunno());
 //		System.out.println(authVO3.getEmpno());
 //		System.out.print(authVO3.getAuth_no() + ",");
@@ -374,7 +375,10 @@ public class AuthJDBCDAO implements AuthDAO_interface {
 //	for(AuthVO auth:list) {
 //		System.out.println(auth.getFunno()+",");
 //	}
-	
+	Set<AuthVO> list2 = dao.findAuthByFunno(15001);
+	for(AuthVO auth:list2) {
+	System.out.println(auth.getEmpno()+",");
+}
 //	AuthJDBCDAO dao2 = new AuthJDBCDAO();
 //	String eString = dao2.getEmail("feng.school@gmail.com").toString();
 //	System.out.println(eString);
@@ -401,6 +405,56 @@ public class AuthJDBCDAO implements AuthDAO_interface {
 //			System.out.print(aEmp.getDeptno());
 //			System.out.println();
 //		}
+	}
+
+
+	@Override
+	public Set<AuthVO> findAuthByFunno(Integer funno) {
+		Set<AuthVO> set = new LinkedHashSet<AuthVO>();
+		AuthVO authVO = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(GET_ONE_BY_FUNNO_STMT);
+			pstmt.setInt(1, funno);
+
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				// authorityVo 也稱為 Domain objects
+				authVO = new AuthVO();
+				authVO.setFunno(rs.getInt("FUNNO"));
+				authVO.setEmpno(rs.getInt("EMPNO"));
+				authVO.setAuth_no(rs.getInt("AUTH_NO"));
+				set.add(authVO);
+			}
+		}  catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
 	}
 
 

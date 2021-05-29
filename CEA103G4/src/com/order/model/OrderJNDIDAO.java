@@ -8,6 +8,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.order_detail.model.Order_detailDAO;
+import com.order_detail.model.Order_detailVO;
+import com.product.model.ProductDAO;
 import com.product.model.ProductVO;
 
 
@@ -34,6 +37,8 @@ public class OrderJNDIDAO implements OrderDAO_interface{
 			"SELECT `ORDER_NO`,`ORDER_DATE`,`ORDER_STATE`,`ORDER_SHIPPING`,`ORDER_PRICE`,`PAY_METHOD`,`PAY_DEADLINE`,`REC_NAME`,`ZIPCODE`,`CITY`,`TOWN`,`REC_ADDR`,`REC_PHONE`,`REC_CELLPHONE`,`LOGISTICS`,`LOGISTICSSTATE`,`DISCOUNT`,`USER_ID`,`SELLER_ID`,`SRATING`,`SRATING_CONTENT`,`POINT` FROM `ORDER` WHERE `ORDER_NO` = ?";
 	private static final String DELETE = 
 			"DELETE FROM `ORDER` WHERE `ORDER_NO` = ?";
+	private static final String CANCEL = 
+			"UPDATE `ORDER` SET `ORDER_STATE`=? WHERE `ORDER_NO` = ?";
 	private static final String UPDATE = 
 			"UPDATE `ORDER` SET `ORDER_DATE`=?, `ORDER_STATE`=?, `ORDER_SHIPPING`=?,`ORDER_PRICE`=?,`PAY_METHOD`=?,`PAY_DEADLINE`=?,`REC_NAME`=?,`ZIPCODE`=?,`CITY`=?,`TOWN`=?,`REC_ADDR`=?,`REC_PHONE`=?,`REC_CELLPHONE`=?,`LOGISTICS`=?,`LOGISTICSSTATE`=?,`DISCOUNT`=?,`USER_ID`=?,`SELLER_ID`=?,`SRATING`=?,`SRATING_CONTENT`=?,`POINT`=? WHERE `ORDER_NO` = ?";
 	private static final String GET_ORDER_BY_ID =
@@ -45,7 +50,9 @@ public class OrderJNDIDAO implements OrderDAO_interface{
 	private static final String UPDATE_UNSHIPPED =
 			"UPDATE `ORDER` SET `LOGISTICSSTATE`=0 WHERE `ORDER_NO` = ?";
 	private static final String UPDATE_SRATING =
-			"UPDATE `ORDER` SET `SRATING` = ?, `SRATING_CONTENT` = ? WHERE `ORDER_NO` = ?";
+			"UPDATE `ORDER` SET `SRATING` = ?, `SRATING_CONTENT` = ?, `LOGISTICSSTATE` = ? WHERE `ORDER_NO` = ?";
+	private static final String GET_Details_ByNo_STMT =
+			"SELECT * FROM `ORDER_DETAIL` WHERE `ORDER_NO` = ? ORDER BY `PRODUCT_NO`";
 	
 	
 	@Override
@@ -191,6 +198,8 @@ public class OrderJNDIDAO implements OrderDAO_interface{
 
 			pstmt.executeUpdate();
 
+			Order_detailDAO dao = new Order_detailDAO();
+			dao.delete(order_no);
 			// Handle any SQL errors
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -662,7 +671,8 @@ public class OrderJNDIDAO implements OrderDAO_interface{
 
 			pstmt.setInt(1, orderVO.getSrating());
 			pstmt.setString(2, orderVO.getSrating_content());
-			pstmt.setInt(3, orderVO.getOrder_no());
+			pstmt.setInt(3, orderVO.getLogisticsstate());
+			pstmt.setInt(4, orderVO.getOrder_no());
 
 			pstmt.executeUpdate();
 
@@ -687,6 +697,188 @@ public class OrderJNDIDAO implements OrderDAO_interface{
 			}
 		}
 		
+	}
+
+	@Override
+	public void insertWithOrderList(OrderVO orderVO, List<Order_detailVO> list) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = ds.getConnection();
+			con.setAutoCommit(false);
+			String cols[] = {"ORDER_NO"};
+			pstmt = con.prepareStatement(INSERT_STMT2,cols);
+			
+			pstmt.setInt(1, orderVO.getOrder_state());
+			pstmt.setInt(2, orderVO.getOrder_shipping());
+			pstmt.setInt(3, orderVO.getOrder_price());
+			pstmt.setInt(4, orderVO.getPay_method());
+			pstmt.setString(5, orderVO.getRec_name());
+			pstmt.setString(6, orderVO.getZipcode());
+			pstmt.setString(7, orderVO.getCity());
+			pstmt.setString(8, orderVO.getTown());
+			pstmt.setString(9, orderVO.getRec_addr());
+			pstmt.setString(10, orderVO.getRec_phone());
+			pstmt.setString(11, orderVO.getRec_cellphone());
+			pstmt.setInt(12, orderVO.getLogistics());
+			pstmt.setInt(13, orderVO.getDiscount());
+			pstmt.setString(14, orderVO.getUser_id());
+			pstmt.setString(15, orderVO.getSeller_id());
+			pstmt.setInt(16, orderVO.getPoint());
+			
+			pstmt.executeUpdate();
+			String next_No = null;
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				next_No = rs.getString(1);
+				System.out.println("自增主鍵值= " + next_No +"(剛新增成功的訂單編號)");
+			} else {
+				System.out.println("未取得自增主鍵值");
+			}
+			rs.close();
+			
+			Order_detailDAO dao = new Order_detailDAO();
+			System.out.println("list.size()-A="+list.size());
+			for (Order_detailVO aDetail : list) {
+				aDetail.setOrder_no(new Integer(next_No)) ;
+				dao.insert2(aDetail,con);
+			}
+			
+			// 2●設定於 pstm.executeUpdate()之後
+			con.commit();
+			
+			System.out.println("list.size()-B="+list.size());
+			System.out.println("新增訂單編號" + next_No + "時,共有明細" + list.size()
+			+ "筆同時被新增");
+			
+			// Handle any driver errors
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3●設定於當有exception發生時之catch區塊內
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+
+	@Override
+	public Set<Order_detailVO> getDetailsByNo(Integer order_no) {
+		Set<Order_detailVO> set = new LinkedHashSet<Order_detailVO>();
+		Order_detailVO order_detailVO = null;
+	
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+	
+		try {
+	
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_Details_ByNo_STMT);
+			pstmt.setInt(1, order_no);
+			rs = pstmt.executeQuery();
+	
+			while (rs.next()) {
+				order_detailVO = new Order_detailVO();
+				order_detailVO.setOrder_no(rs.getInt("order_no"));
+				order_detailVO.setProduct_no(rs.getInt("product_no"));
+				order_detailVO.setProduct_num(rs.getInt("product_num"));
+				order_detailVO.setOrder_price(rs.getInt("order_price"));
+				set.add(order_detailVO); // Store the row in the vector
+			}
+	
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	}
+
+	@Override
+	public void cancel(Integer order_no) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(CANCEL);
+
+			pstmt.setInt(1, 2);
+			pstmt.setInt(2, order_no);
+
+			pstmt.executeUpdate();
+
+			Order_detailDAO dao = new Order_detailDAO();
+			dao.delete(order_no);
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 }

@@ -19,15 +19,15 @@ public class QaDAO implements QaDAO_interface {
 		}
 	}
 	private static final String INSERT_STMT = 
-			"INSERT INTO `QA` (`EMPNO`,`QA_DATE`,`QA_CONTENT`) VALUES (?, ?, ?)";
+			"INSERT INTO `QA` (`EMPNO`,`QA_DATE`,`QA_TYPE`,`QUESTION`,`ANSWER`) VALUES (?, ?, ?, ?, ?)";
 	private static final String GET_ALL_STMT = 
-			"SELECT * FROM `QA` ORDER BY `QA_NO`";
+			"SELECT * FROM `QA` ORDER BY `QA_TYPE`";
 	private static final String GET_ONE_STMT = 
-			"SELECT `QA_NO`,`EMPNO`,`QA_DATE`,`QA_CONTENT` FROM QA WHERE `QA_NO` = ?";
+			"SELECT `QA_NO`,`EMPNO`,`QA_DATE`,`QA_TYPE`,`QUESTION`,`ANSWER` FROM QA WHERE `QA_NO` = ?";
 	private static final String DELETE = 
 			"DELETE FROM QA where QA_NO = ?";
 	private static final String UPDATE = 
-			"UPDATE `QA` SET `EMPNO`=?, `QA_DATE`=?, `QA_CONTENT`=? WHERE `QA_NO` = ?";
+			"UPDATE `QA` SET `EMPNO`=?, `QA_DATE`=?, `QA_TYPE`=?, `QUESTION`=?, `ANSWER`=? WHERE `QA_NO` = ?";
 
 
 	@Override
@@ -42,7 +42,9 @@ public class QaDAO implements QaDAO_interface {
 
 			pstmt.setInt(1, qaVO.getEmpno());
 			pstmt.setDate(2, qaVO.getQa_date());
-			pstmt.setString(3, qaVO.getQa_content());
+			pstmt.setInt(3, qaVO.getQa_type());
+			pstmt.setString(4, qaVO.getQuestion());
+			pstmt.setString(5, qaVO.getAnswer());
 			
 
 			pstmt.executeUpdate();
@@ -84,8 +86,10 @@ public class QaDAO implements QaDAO_interface {
 
 			pstmt.setInt(1, qaVO.getEmpno());
 			pstmt.setDate(2, qaVO.getQa_date());
-			pstmt.setString(3, qaVO.getQa_content());
-			pstmt.setInt(4, qaVO.getQa_no());
+			pstmt.setInt(3, qaVO.getQa_type());
+			pstmt.setString(4, qaVO.getQuestion());
+			pstmt.setString(5, qaVO.getAnswer());
+			pstmt.setInt(6, qaVO.getQa_no());
 
 			pstmt.executeUpdate();
 
@@ -176,7 +180,9 @@ public class QaDAO implements QaDAO_interface {
 				qaVO.setQa_no(rs.getInt("qa_no"));
 				qaVO.setEmpno(rs.getInt("empno"));
 				qaVO.setQa_date(rs.getDate("qa_date"));
-				qaVO.setQa_content(rs.getString("qa_content"));
+				qaVO.setQa_type(rs.getInt("qa_type"));
+				qaVO.setQuestion(rs.getString("question"));
+				qaVO.setAnswer(rs.getString("answer"));
 				
 			}
 
@@ -233,7 +239,9 @@ public class QaDAO implements QaDAO_interface {
 				qaVO.setQa_no(rs.getInt("qa_no"));
 				qaVO.setEmpno(rs.getInt("empno"));
 				qaVO.setQa_date(rs.getDate("qa_date"));
-				qaVO.setQa_content(rs.getString("qa_content"));
+				qaVO.setQa_type(rs.getInt("qa_type"));
+				qaVO.setQuestion(rs.getString("question"));
+				qaVO.setAnswer(rs.getString("answer"));
 				
 				list.add(qaVO); // Store the row in the list
 			}

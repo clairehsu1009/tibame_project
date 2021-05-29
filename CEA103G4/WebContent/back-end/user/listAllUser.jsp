@@ -97,9 +97,9 @@
 									<!-- 		<th>賣家評價</th> -->
 									<!-- 		<th>評價人數</th> -->
 									<!-- 		<th>錢包</th> -->
-									<th>修改</th>
+									<th>修改會員狀態</th>
 									<!-- 		<th>刪除</th> -->
-									<th>曾經檢舉過的直播</th>
+<!-- 									<th>曾經檢舉過的直播</th> -->
 								</tr>
 							</thead>
 							<tbody>
@@ -148,14 +148,14 @@
 										<%-- 			     <input type="hidden" name="user_id"  value="${userVO.user_id}"> --%>
 										<!-- 			     <input type="hidden" name="action" value="delete"></FORM> -->
 										<!-- 			</td> -->
-										<td>
-											<FORM METHOD="post"
-												ACTION="<%=request.getContextPath()%>/front-end/user/user.do"
-												style="margin-bottom: 0px;">
-												<input class="btn btn-warning" type="submit" value="送出查詢">
-												<input type="hidden" name="user_id" value="${userVO.user_id}"> 
-											</FORM>
-										</td>
+<!-- 										<td> -->
+<!-- 											<FORM METHOD="post" -->
+<%-- 												ACTION="<%=request.getContextPath()%>/front-end/user/user.do" --%>
+<!-- 												style="margin-bottom: 0px;"> -->
+<!-- 												<input class="btn btn-warning" type="submit" value="送出查詢"> -->
+<%-- 												<input type="hidden" name="user_id" value="${userVO.user_id}">  --%>
+<!-- 											</FORM> -->
+<!-- 										</td> -->
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -166,11 +166,11 @@
 		</div>
 		<%@ include file="page2.file"%>
 		<%
-			if (request.getAttribute("listLive_report_ByUser_id") != null) {
+// 			if (request.getAttribute("listLive_report_ByUser_id") != null) {
 		%>
-		<jsp:include page="listLive_report_ByUser_id.jsp" />
+<%-- 		<jsp:include page="listLive_report_ByUser_id.jsp" /> --%>
 		<%
-			}
+// 			}
 		%>
 	</main>
 	<jsp:include page="/back-end/backendfooter.jsp" />

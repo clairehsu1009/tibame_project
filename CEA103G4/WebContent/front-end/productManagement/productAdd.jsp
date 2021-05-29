@@ -108,13 +108,12 @@
 			<div class="col-lg-4 col-sm-6">
 				<label for="product_photo" id="upload-img" class="card mb-2 productcard">
 				<input class="form-control" id="product_photo" type="file" name="product_photo" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"  value="<%= (productVO==null)? "" : productVO.getProduct_photo()%>">
-				<i class="fa fa-camera" id="iconcamera"></i>
+				<i class="fa fa-file-picture-o" id="iconcamera"></i>
 				<i class="delAvatar fa fa-times-circle-o" title="移除圖片"></i>
 				</label>
 			</div>
 			<%-- 錯誤表列 --%>
 			<c:if test="${not empty errorMsgs}">
-			<font style="color:red">請修正以下錯誤:</font>
 			<ul>
 			<c:forEach var="message" items="${errorMsgs}">
 				<li style="color:red">${message}</li>
@@ -151,64 +150,9 @@
 	<!-- Page specific javascripts-->
 	<script type="text/javascript"
 		src="<%=request.getContextPath()%>/back-template/docs/js/plugins/chart.js"></script>
-	<script type="text/javascript">
-		var data = {
-			labels : [ "January", "February", "March", "April", "May" ],
-			datasets : [ {
-				label : "My First dataset",
-				fillColor : "rgba(220,220,220,0.2)",
-				strokeColor : "rgba(220,220,220,1)",
-				pointColor : "rgba(220,220,220,1)",
-				pointStrokeColor : "#fff",
-				pointHighlightFill : "#fff",
-				pointHighlightStroke : "rgba(220,220,220,1)",
-				data : [ 65, 59, 80, 81, 56 ]
-			}, {
-				label : "My Second dataset",
-				fillColor : "rgba(151,187,205,0.2)",
-				strokeColor : "rgba(151,187,205,1)",
-				pointColor : "rgba(151,187,205,1)",
-				pointStrokeColor : "#fff",
-				pointHighlightFill : "#fff",
-				pointHighlightStroke : "rgba(151,187,205,1)",
-				data : [ 28, 48, 40, 19, 86 ]
-			} ]
-		};
-		var pdata = [ {
-			value : 300,
-			color : "#46BFBD",
-			highlight : "#5AD3D1",
-			label : "Complete"
-		}, {
-			value : 50,
-			color : "#F7464A",
-			highlight : "#FF5A5E",
-			label : "In-Progress"
-		} ]
 
-		var ctxl = $("#lineChartDemo").get(0).getContext("2d");
-		var lineChart = new Chart(ctxl).Line(data);
-
-		var ctxp = $("#pieChartDemo").get(0).getContext("2d");
-		var pieChart = new Chart(ctxp).Pie(pdata);
-	</script>
-	<!-- Google analytics script-->
 	<script type="text/javascript">
-		if (document.location.hostname == 'pratikborsadiya.in') {
-			(function(i, s, o, g, r, a, m) {
-				i['GoogleAnalyticsObject'] = r;
-				i[r] = i[r] || function() {
-					(i[r].q = i[r].q || []).push(arguments)
-				}, i[r].l = 1 * new Date();
-				a = s.createElement(o), m = s.getElementsByTagName(o)[0];
-				a.async = 1;
-				a.src = g;
-				m.parentNode.insertBefore(a, m)
-			})(window, document, 'script',
-					'//www.google-analytics.com/analytics.js', 'ga');
-			ga('create', 'UA-72504830-1', 'auto');
-			ga('send', 'pageview');
-		}
+
 
 		//實現上傳圖片可以預覽所上傳的圖片,若重新上傳其他圖片,可以移除舊的圖片預覽,只顯示最新的狀態
 

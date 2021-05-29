@@ -1,6 +1,8 @@
 package com.message.websocket.jedis;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -30,6 +32,21 @@ public class JedisHandleMessage {
 		jedis.rpush(receiverKey, message);
 
 		jedis.close();
+	}
+	
+	public static Set<String> getFriendList(String sender){
+		Set<String> friends = new HashSet<String>();
+		String key = sender + ":*"; //模糊比對抓取好友
+		int size=sender.length();
+		Jedis jedis = null;
+		jedis = pool.getResource();
+		jedis.auth("123456");
+		Set<String> set =jedis.keys(key);
+		for(String keys: set) {
+			friends.add(keys.substring(size+1));
+		}
+		jedis.close();
+		return friends;
 	}
 
 }

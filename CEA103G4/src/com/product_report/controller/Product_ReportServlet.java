@@ -139,28 +139,19 @@ public class Product_ReportServlet extends HttpServlet{
 				
 				Integer pro_report_no = new Integer(req.getParameter("pro_report_no").trim());
 				
-//				String pro_report_content = req.getParameter("pro_report_content");
-//
-//				//*需更改 之後要做點選按鈕 動態抓取商品的商品編號(會員不需自行填寫)
 				Integer product_no = new Integer(req.getParameter("product_no").trim());;
-//				//*需更改 檢舉者帳號 動態抓取自動帶入
-//				String user_id = req.getParameter("user_id");
-//				//檢舉時間不用驗證
-//				Integer empno = new Integer(req.getParameter("empno").trim());
+
 				
 				Integer proreport_state = new Integer(req.getParameter("proreport_state").trim());
 
 			
 				product_reportVO.setPro_report_no(pro_report_no);
-//				product_reportVO.setPro_report_content(pro_report_content);
 				product_reportVO.setProduct_no(product_no);
-//				product_reportVO.setUser_id(user_id);
-//				product_reportVO.setEmpno(empno);
 				product_reportVO.setProreport_state(proreport_state);
 
-				// Send the use back to the form, if there were errors
+
 				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("product_reportVO", product_reportVO); // 含有輸入格式錯誤的product_reportVO物件,也存入req
+					req.setAttribute("product_reportVO", product_reportVO); 
 					RequestDispatcher failureView = req
 							.getRequestDispatcher("/back-end/product_report/getAllUserReport.jsp");
 					failureView.forward(req, res);
@@ -186,9 +177,9 @@ public class Product_ReportServlet extends HttpServlet{
 
 				
 				/***************************3.修改完成,準備轉交(Send the Success view)*************/
-				req.setAttribute("product_reportVO", product_reportVO); // 資料庫update成功後,正確的的product_reportVO物件,存入req
+				req.setAttribute("product_reportVO", product_reportVO); 
 				String url = "/back-end/product_report/getAllUserReport.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneProduct_Report.jsp
+				RequestDispatcher successView = req.getRequestDispatcher(url); 
 				successView.forward(req, res);
 
 				/***************************其他可能的錯誤處理*************************************/

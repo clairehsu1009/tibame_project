@@ -5,14 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import oracle.net.aso.a;
 
 
 
@@ -31,6 +32,7 @@ public class AuthDAO implements AuthDAO_interface {
 	private static final String UPDATE_STMT = "update AUTH set AUTH_NO=? where EMPNO=? and FUNNO=?";
 	private static final String DELETE_STMT = "delete from AUTH where EMPNO=? and FUNNO=?";
 	private static final String GET_ONE_BY_EMPNO_STMT = "select FUNNO,EMPNO,AUTH_NO from AUTH where EMPNO = ? ";
+	private static final String GET_ONE_BY_FUNNO_STMT = "select FUNNO,EMPNO,AUTH_NO from AUTH where FUNNO = ? ";
 	private static final String GET_ALL_BY_EMPNO_STMT = "select FUNNO,EMPNO,AUTH_NO from AUTH order by EMPNO";
 	private static final String GET_AUTH_ON = "SELECT AUTH_NO,EMPNO,FUNNO FROM AUTH WHERE EMPNO=? ";
 
@@ -192,6 +194,58 @@ public class AuthDAO implements AuthDAO_interface {
 			}
 		}
 		return authVO;
+	}
+	@Override
+	public Set<AuthVO> findAuthByFunno(Integer funno) {
+		Set<AuthVO> set = new LinkedHashSet<AuthVO>();
+		AuthVO authVO = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_ONE_BY_FUNNO_STMT);
+			pstmt.setInt(1, funno);	
+
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				// authorityVo 也稱為 Domain objects
+				authVO = new AuthVO();
+				authVO.setFunno(rs.getInt("FUNNO"));
+				authVO.setEmpno(rs.getInt("EMPNO"));
+				authVO.setAuth_no(rs.getInt("AUTH_NO"));
+				set.add(authVO);
+			}
+		}  catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
 	}
 	@Override
 	public List<AuthVO> getAuth(Integer empno){

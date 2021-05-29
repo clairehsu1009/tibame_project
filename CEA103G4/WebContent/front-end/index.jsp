@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.product.model.*"%>
 <%@ page import="com.product_type.model.*"%>
@@ -15,7 +16,7 @@
 	pageContext.setAttribute("products",products);
 		
  %>
- 
+ <jsp:useBean id="liveSvc" scope="page" class="com.live.model.LiveService" />
  
  
 <!DOCTYPE html>
@@ -71,24 +72,6 @@
             </div>
           </div>
         </div>
-<%--         <div class="single-hero-items set-bg" data-setbg="${pageContext.request.contextPath}/front-template/images/index/hero-2.jpg"> --%>
-<!--           <div class="container"> -->
-<!--             <div class="row"> -->
-<!--               <div class="col-lg-5"> -->
-<!--                 <span>Bag,kids</span> -->
-<!--                 <h1>Black friday</h1> -->
-<!--                 <p> -->
-<!--                   Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed -->
-<!--                   do eiusmod tempor incididunt ut labore et dolore -->
-<!--                 </p> -->
-<!--                 <a href="#" class="primary-btn">Shop Now</a> -->
-<!--               </div> -->
-<!--             </div> -->
-<!--             <div class="off-card"> -->
-<!--               <h2>Sale <span>50%</span></h2> -->
-<!--             </div> -->
-<!--           </div> -->
-<!--         </div> -->
       </div>
     </section>
     <!-- Hero Section End -->
@@ -105,11 +88,13 @@
               <h2>Women’s</h2>
             </div>
           </div>
-          <div class="col-lg-8 offset-lg-1">
+          <div class="col-lg-8 offset-lg-1" id="product_slider">
           <div class="product-slider-pdtype"><a class="cative" href="<%=request.getContextPath()%>/product_type/product_type.do?action=getProductsByPdtype&pdtype_no=4001">Clothes</a></div>
             <div class="product-slider owl-carousel">
             <c:forEach var="productVO" items="${products}" begin="0" end="${products.size()}">
-            <c:if test="${productVO.pdtype_no == 4001}"> 
+            <c:if test="${productVO.pdtype_no == 4001}">
+       <div class="productBox">
+          <div class="productcard"> 
             <div class="product-item" >
                 <div class="pi-pic">
                 <div class="pi-img">
@@ -118,11 +103,11 @@
                     </a>      	
                   </div>
                     <ul>
-                        <li class="w-icon active">
-                            <a href="#"><i class="icon_bag_alt"></i></a>
+                        <li class="w-icon">
+                            <i class="icon_bag_alt" data-id="${productVO.product_no}"></i>
                         </li>   
                         <li class="w-heart" >
-                            <i class="icon_heart_alt"  data-no="${productVO.product_no}"></i>
+                            <i class="icon_heart_alt" data-id="${productVO.product_no}"></i>
                         </li>
                     </ul>
                 </div>
@@ -135,6 +120,8 @@
                     </a>
                 </div>
             </div>
+         </div>
+      </div>
             </c:if>
             </c:forEach>
             </div>
@@ -142,6 +129,8 @@
            <div class="product-slider owl-carousel">  
             <c:forEach var="productVO" items="${products}" begin="0" end="${products.size()}">
             <c:if test="${productVO.pdtype_no == 4004}"> 
+         <div class="productBox">
+          <div class="productcard"> 
             <div class="product-item" >
                 <div class="pi-pic">
                 <div class="pi-img">
@@ -150,11 +139,11 @@
                     </a>      	
                   </div>
                     <ul>
-                        <li class="w-icon active">
-                            <a href="#"><i class="icon_bag_alt"></i></a>
+                        <li class="w-icon">
+                            <i class="icon_bag_alt" data-id="${productVO.product_no}"></i>
                         </li>   
                         <li class="w-heart" >
-                            <i class="icon_heart_alt"  data-no="${productVO.product_no}"></i>
+                            <i class="icon_heart_alt" data-id="${productVO.product_no}"></i>
                         </li>
                     </ul>
                 </div>
@@ -167,6 +156,8 @@
                     </a>
                 </div>
             </div>
+          </div>
+         </div>
             </c:if>
             </c:forEach>
             </div>
@@ -177,181 +168,80 @@
     <!-- Women Banner Section End -->
 
     <!-- Deal Of The Week Section Begin-->
+<c:forEach var="live" items="${liveSvc.getAll()}" begin="0" end="0">
+    <c:if test="${live.live_state == 2}">
     <section class="deal-of-week set-bg spad" data-setbg="${pageContext.request.contextPath}/front-template/images/index/time-live.jpg">
       <div class="row container">
         <div class="col-lg-6 text-center">
           <div class="section-title">
-            <h2>直播預告</h2>
-			<h4>直播間名稱：</h4>			
+            <h2>目前直播中</h2>
+			<h4>直播間名稱&nbsp;${live.live_name}</h4>			
             <div class="product-price">
-              $35.00
-              <span>/ HanBag</span>
+              <span>直播類別&nbsp;「${live.live_type}」</span>
             </div>
           </div>
-          <div class="countdown-timer" id="countdown">
+          <div class="liveTime">
+          <h4>直播開始時間</h4>
+          </div>
+          <div class="countdown-timer"> 
             <div class="cd-item">
-              <span></span>
-              <p>Days</p>
+              <span>
+            <fmt:formatDate value="${live.live_time}" pattern="MM"/>
+              </span>
+              <p>月</p>
             </div>
             <div class="cd-item">
-              <span></span>
-              <p>Hrs</p>
+              <span>
+            <fmt:formatDate value="${live.live_time}" pattern="dd"/>
+              </span>
+              <p>日</p>
+            </div>        	
+            <div class="cd-item">
+              <span>
+            <fmt:formatDate value="${live.live_time}" pattern="HH"/>
+              </span>
+              <p>點</p>
             </div>
             <div class="cd-item">
-              <span></span>
-              <p>Mins</p>
-            </div>
-            <div class="cd-item">
-              <span></span>
-              <p>Secs</p>
+              <span>
+              <fmt:formatDate value="${live.live_time}" pattern="mm"/>
+              </span>
+              <p>分</p>
             </div>
           </div>
-          <a href="#" class="primary-btn">Shop Now</a>
+          
+<!--           <div class="countdown-timer" id="countdown"> -->
+<!--             <div class="cd-item"> -->
+<!--               <span></span> -->
+<!--               <p>Days</p> -->
+<!--             </div> -->
+<!--             <div class="cd-item"> -->
+<!--               <span></span> -->
+<!--               <p>Hrs</p> -->
+<!--             </div> -->
+<!--             <div class="cd-item"> -->
+<!--               <span></span> -->
+<!--               <p>Mins</p> -->
+<!--             </div> -->
+<!--             <div class="cd-item"> -->
+<!--               <span></span> -->
+<!--               <p>Secs</p> -->
+<!--             </div> -->
+<!--           </div> -->										
+          <a href="<%=request.getContextPath()%>/live/live.do?live_no=${live.live_no}" class="primary-btn" style="border-radius: 10px; background:pink;">前往觀看</a>
         </div>
         <div class="col-lg-6 text-center">
         <div>
-        <img width="350px" height="350px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=5081" class="rounded mx-auto d-block" alt="">
-        
+      <a href="<%=request.getContextPath()%>/live/live.do?live_no=${live.live_no}">
+        <img width="350px" height="350px" src="${pageContext.request.contextPath}/live/LiveGifReader.do?live_no=${live.live_no}" class="rounded mx-auto d-block" alt="${live.live_name}">
+       </a> 
         </div>
-        
-        
         </div>
-        
-        
-        
       </div>
     </section>
-    <!-- Deal Of The Week Section End -->
+    </c:if>
+  </c:forEach>
 
-    <!-- Man Banner Section Begin -->
-    <!-- <section class="man-banner spad">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-8">
-            <div class="filter-control">
-              <ul>
-                <li class="active">Clothings</li>
-                <li>HandBag</li>
-                <li>Shoes</li>
-                <li>Accessories</li>
-              </ul>
-            </div>
-            <div class="product-slider owl-carousel">
-              <div class="product-item">
-                <div class="pi-pic">
-                  <img src="img/products/man-1.jpg" alt="" />
-                  <div class="sale">Sale</div>
-                  <div class="icon">
-                    <i class="icon_heart_alt"></i>
-                  </div>
-                  <ul>
-                    <li class="w-icon active">
-                      <a href="#"><i class="icon_bag_alt"></i></a>
-                    </li>
-                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                    <li class="w-icon">
-                      <a href="#"><i class="fa fa-random"></i></a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="pi-text">
-                  <div class="catagory-name">Coat</div>
-                  <a href="#">
-                    <h5>Pure Pineapple</h5>
-                  </a>
-                  <div class="product-price">
-                    $14.00
-                    <span>$35.00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="product-item">
-                <div class="pi-pic">
-                  <img src="img/products/man-2.jpg" alt="" />
-                  <div class="icon">
-                    <i class="icon_heart_alt"></i>
-                  </div>
-                  <ul>
-                    <li class="w-icon active">
-                      <a href="#"><i class="icon_bag_alt"></i></a>
-                    </li>
-                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                    <li class="w-icon">
-                      <a href="#"><i class="fa fa-random"></i></a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="pi-text">
-                  <div class="catagory-name">Shoes</div>
-                  <a href="#">
-                    <h5>Guangzhou sweater</h5>
-                  </a>
-                  <div class="product-price">$13.00</div>
-                </div>
-              </div>
-              <div class="product-item">
-                <div class="pi-pic">
-                  <img src="img/products/man-3.jpg" alt="" />
-                  <div class="icon">
-                    <i class="icon_heart_alt"></i>
-                  </div>
-                  <ul>
-                    <li class="w-icon active">
-                      <a href="#"><i class="icon_bag_alt"></i></a>
-                    </li>
-                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                    <li class="w-icon">
-                      <a href="#"><i class="fa fa-random"></i></a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="pi-text">
-                  <div class="catagory-name">Towel</div>
-                  <a href="#">
-                    <h5>Pure Pineapple</h5>
-                  </a>
-                  <div class="product-price">$34.00</div>
-                </div>
-              </div>
-              <div class="product-item">
-                <div class="pi-pic">
-                  <img src="img/products/man-4.jpg" alt="" />
-                  <div class="icon">
-                    <i class="icon_heart_alt"></i>
-                  </div>
-                  <ul>
-                    <li class="w-icon active">
-                      <a href="#"><i class="icon_bag_alt"></i></a>
-                    </li>
-                    <li class="quick-view"><a href="#">+ Quick View</a></li>
-                    <li class="w-icon">
-                      <a href="#"><i class="fa fa-random"></i></a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="pi-text">
-                  <div class="catagory-name">Towel</div>
-                  <a href="#">
-                    <h5>Converse Shoes</h5>
-                  </a>
-                  <div class="product-price">$34.00</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 offset-lg-1">
-            <div
-              class="product-large set-bg m-large"
-              data-setbg="img/products/man-large.jpg"
-            >
-              <h2>Men’s</h2>
-              <a href="#">Discover More</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-    <!-- Man Banner Section End -->
 
         <div class="benefit-items">
           <div class="row">
@@ -411,8 +301,118 @@
     <script src="${pageContext.request.contextPath}/front-template/js/owl.carousel.min.js"></script>
     <script src="${pageContext.request.contextPath}/front-template/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/front-template/js/ajaxSearch.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.all.min.js"></script>
+    <script src="${pageContext.request.contextPath}/front-template/js/products-search.js" ></script>
     
+	<script>
+	const product_slider = document.getElementById('product_slider');
+	product_slider.addEventListener('click', event => {
+		if (event.target.matches('.icon_bag_alt')) {
+	    	addCart(event.target.dataset.id);	
+		}else if (event.target.matches('.icon_heart_alt')){
+			addFavorite(event.target.dataset.id);
+    	}
+});
+	
+	//點選加入購物車呼叫的function
+	function addCart(id){
+		$.ajax({ 
+			  type:"POST",
+			  url:"<%=request.getContextPath()%>/ShoppingServlet",
+			  data:{
+				  "product_no": id,
+				  "action": "ADDFromFav"
+			  },
+			  success: function(res) {
+				   
+				  const cartproducts=cartProduct(res, "<%=request.getContextPath()%>"); 
+				  $("#carts").html(cartproducts); 
+				  
+				  var carRes  = JSON.parse(res)
+				  var ibaCount = carRes["results"].length;
+				  $("#iba").html(ibaCount);
 
+				  var titlePrice = 0
+					carRes["results"].forEach(function (item,index) {
+						titlePrice += (item.product_price * item.product_quantity)
+					});
+				  $(".cart-price").html("$" + titlePrice);
+				  $("#cartHoverTotal").html("$" + titlePrice);
+
+
+				  Swal.fire({
+					  icon: 'success',
+					  title: '商品加入購物車',
+					  showConfirmButton: false,
+					  timer: 1000
+					});
+				  
+		      }, 	  
+			  error:function () {
+		  			Swal.fire({
+			  			  icon: 'error',
+			  			  title: '很抱歉,加入購物車失敗',
+			  			  showConfirmButton: false,
+			  			  timer: 1000
+			  			});
+			  },				
+			 });
+	}
+	
+	function addFavorite(id){
+		const data =  JSON.parse(localStorage.getItem("favorite"));
+		if (data == null){
+			$.ajax({ 
+				  type:"POST",
+				  url:"<%=request.getContextPath()%>/Favorite",
+				  data:{
+					  "product_no":id,
+					  "action": "addFavorite"
+				  },
+				  success: function(res) {
+					  localStorage.setItem('favorite', res)
+					  Swal.fire({
+						  icon: 'success',
+						  title: `已加入收藏清單`,
+						  showConfirmButton: false,
+						  timer: 1500
+						});
+					  },
+		})
+		} else {
+
+	    const index = data["results"].findIndex(item => item.product_no === Number(id))
+	    if (index !== -1){
+			  Swal.fire({
+				  icon: 'error',
+				  title: `已在收藏清單`,
+				  showConfirmButton: false,
+				  timer: 1500
+				});
+	    } else {
+			$.ajax({ 
+				  type:"POST",
+				  url:"<%=request.getContextPath()%>/Favorite",
+				  data:{
+					  "product_no": id,
+					  "action": "addFavorite"
+				  },
+				  success: function(res) {
+					  localStorage.setItem('favorite', res)
+					  Swal.fire({
+						  icon: 'success',
+						  title: `已加入收藏清單`,
+						  showConfirmButton: false,
+						  timer: 1500
+						});
+					  },
+		})
+	 }
+  } 
+}
+	
+	
+	</script>
     
     
   </body>

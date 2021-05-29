@@ -51,7 +51,7 @@ margin: -30px -30px 0px;
 <main class="app-content">
                 <div class="app-title">
                   <div>
-                    <h1><i class="fa fa-user fa-lg"></i> 更改密碼</h1>
+                    <h1><i class="fa fa-edit"></i> 更改密碼</h1>
                   </div>
                   <ul class="app-breadcrumb breadcrumb">
                     <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/front-end/protected/userIndex.jsp"><i class="fa fa-home fa-lg"></i></a></li>
@@ -102,45 +102,7 @@ margin: -30px -30px 0px;
     <!-- Page specific javascripts-->
 <script type="text/javascript" src="<%=request.getContextPath()%>/back-template/docs/js/plugins/bootstrap-notify.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/back-template/docs/js/plugins/sweetalert.min.js"></script>
-<script type="text/javascript">
-// $('#demoSwal').click(function(){
-//   	swal({
-//   		title: "Are you sure?",
-//   		text: "You will not be able to recover this imaginary file!",
-//   		type: "warning",
-//   		showCancelButton: true,
-//   		confirmButtonText: "Yes, delete it!",
-//   		cancelButtonText: "No, cancel plx!",
-//   		closeOnConfirm: false,
-//   		closeOnCancel: false
-//   	}, function(isConfirm) {
-//   		if (isConfirm) {
-//   			swal("Deleted!", "Your imaginary file has been deleted.", "success");
-//   		} else {
-//   			swal("Cancelled", "Your imaginary file is safe :)", "error");
-//   		}
-//   	});
-//   });
-  
-// $('#demoSwal').click(function(){
-//   	swal({
-//   		title: "確認更改?",
-//   		text: "修改後請重新登入",
-//   		type: "warning",
-//   		showCancelButton: true,
-//   		confirmButtonText: "是的, 我要修改!",
-//   		cancelButtonText: "不, 我反悔了!",
-//   		closeOnConfirm: false,
-//   		closeOnCancel: false
-//   	}, function(isConfirm) {
-//   		if (isConfirm) {
-//   			swal("update!", "妳的密碼已被修改", "成功");
-//   		} else {
-//   			swal("Cancelled", "更改密碼取消:)", "失敗");
-//   		}
-//   	});
-//   });
-</script>
+
 <!-- Google analytics script-->
     <script type="text/javascript">
       if(document.location.hostname == 'pratikborsadiya.in') {

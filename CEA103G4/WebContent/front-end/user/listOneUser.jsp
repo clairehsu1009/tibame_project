@@ -42,9 +42,35 @@ margin-left: 15px;
 margin: -30px -30px 0px;
 }
 .table th, .table td {
-	border: 1px solid #dee2e6 !important;
-	text-align:left;
+/* 	border: 1px solid #dee2e6 !important; */
+	border:none !important;
+	text-align:center;
 }
+.oneUser  {
+    justify-content: center;
+
+}
+.oneUser table {
+	width:50%;
+    box-shadow: 1px 1px 10px rgb(0 0 0 / 10%);
+    border-radius: 10px;
+}
+
+@media (max-width: 576px) {
+
+.oneUser table {
+	width:95%;
+}
+
+}
+
+@media (max-width: 480px)
+.app-content {
+    padding: 15px;
+    overflow-x: hidden;
+}
+
+
 </style>
 
 </head>
@@ -61,47 +87,48 @@ margin: -30px -30px 0px;
                     <li class="breadcrumb-item">我的基本資料</li>
                   </ul>
                 </div>
-          <div class="row productList" style="margin-top:0px;border-right: 1px solid #dee2e6;">
+          <div class="row oneUser" style="margin-top:15px;">
+
 <table class="table">
 	<tr>
-		<th>帳號:</th>
+		<th>帳號</th>
 		<td><%=userVO.getUser_id()%></td>
 <!-- 		<th>密碼</th> -->
 	</tr>
 	<tr>
-		<th>姓名:</th>
+		<th>姓名</th>
 		<td><%=userVO.getUser_name()%></td>
 	</tr>	
 	<tr>
-		<th>身分証字號:</th>
+		<th>身分證字號</th>
 		<td><%=userVO.getId_card()%></td>
 	</tr>	
 	<tr>
-		<th>性別:</th>
+		<th>性別</th>
 		<td>${(userVO.user_gender==0)? '女':''}${(userVO.user_gender==1)? '男':''}</td>
 	</tr>	
 	<tr>
-		<th>生日:</th>
+		<th>生日</th>
 		<td><%=userVO.getUser_dob()%></td>
 	</tr>	
 	<tr>
-		<th>Email:</th>
+		<th>Email</th>
 		<td><%=userVO.getUser_mail()%></td>
 	</tr>	
 	<tr>
-		<th>電話:</th>
+		<th>電話</th>
 		<td><%=userVO.getUser_phone()%></td>
 	</tr>	
 	<tr>
-		<th>手機號碼:</th>
+		<th>手機號碼</th>
 		<td><%=userVO.getUser_mobile()%></td>
 	</tr>	
 	<tr>
-		<th>地址:</th>
+		<th>地址</th>
 		<td>${userVO.city}${userVO.town}${userVO.zipcode}${userVO.user_addr}</td>
 	</tr>	
 	<tr>
-		<th>個人照:</th>
+		<th>個人照</th>
 		<td><img width="100px" height="100px" src="${pageContext.request.contextPath}/UserShowPhoto?user_id=<%=userVO.getUser_id()%>"></td>
 	</tr>
 <!-- 	<tr> -->
@@ -134,13 +161,13 @@ margin: -30px -30px 0px;
 <%-- 		<td><%=userVO.getUser_comment()%></td> --%>
 <%-- 		<td><%=userVO.getCash()%></td> --%>
 </table>
-
-<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/front-end/user/user.do">
+</div>
+<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/front-end/user/user.do" style="text-align: center;">
 	<button type="submit" class="btn btn-info">修改我的資料</button>
 	<input type="hidden" name="user_id"  value="${userVO.user_id}">
 	<input type="hidden" name="action"	value="getOne_For_Update">       
 </FORM>
-</div>
+
 <jsp:include page="/front-end/protected/userIndex_footer.jsp" />
 
 </body>

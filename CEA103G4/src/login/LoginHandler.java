@@ -73,25 +73,15 @@ public class LoginHandler extends HttpServlet {
 					String url = "/back-end/backendLogin.jsp";
 					RequestDispatcher failureView = req.getRequestDispatcher(url);
 					failureView.forward(req, res);
-				} else {
-					int state = empVO.getState(); // 查詢員工在職狀態
-					if (state == 0) { // 離職的話導回login
+				} else if(empVO.getState()==0) {
 						String quit = "quit";
 						req.setAttribute("quit", quit);
 						errorMsgs.put("empno", "此員工已離職");
 						RequestDispatcher failureView = req.getRequestDispatcher("back-end/backendLogin.jsp");
 						failureView.forward(req, res);
-					}
-					
-					if (!errorMsgs.isEmpty()) {
-						req.setAttribute("empVO", empVO);
-						RequestDispatcher failureView = req.getRequestDispatcher("/back-end/backendLogin.jsp");
-						failureView.forward(req, res);
-						return;
-					}
-
-					// 取得員工帳號的權限
-					AuthService authSvc = new AuthService();
+				
+				}else {
+					AuthService authSvc = new AuthService();	// 取得員工帳號的權限
 					List<AuthVO> authList = authSvc.getAuthNOs(empno);
 //					for(AuthVO auth:list) {
 //						System.out.println(auth.getFunno()+",");
@@ -115,10 +105,8 @@ public class LoginHandler extends HttpServlet {
 					// (-->如無來源網頁:則重導至login_success.jsp)
 
 				}
-
+					
 			} catch (Exception e) {
-				String badguys = "badguys";
-				req.setAttribute("badguys", badguys);
 				RequestDispatcher failureView = req.getRequestDispatcher("/back-end/backendLogin.jsp");
 				failureView.forward(req, res);
 			}

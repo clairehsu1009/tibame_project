@@ -24,6 +24,7 @@ public class SellerProducts extends HttpServlet {
 			
 			String sellerURL = "/front-end/productsell/sellerHome.jsp";
 			String user_id = req.getParameter("user_id").trim();
+
 			ProductService productSvc = new ProductService();
 			List <ProductVO> SellerProducts = productSvc.getSellerProducts(user_id);
 			req.setAttribute("SellerProducts", SellerProducts);

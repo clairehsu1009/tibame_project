@@ -3,7 +3,7 @@ package com.live.model;
 import java.util.List;
 
 public interface LiveDAO_interface {
-	public void insert(LiveVO liveVO);
+	public Integer insert(LiveVO liveVO);
 
 	public void update(LiveVO liveVO);
 

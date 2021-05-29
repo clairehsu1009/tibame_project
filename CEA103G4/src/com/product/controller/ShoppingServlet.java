@@ -32,10 +32,13 @@ public class ShoppingServlet extends HttpServlet {
 
 			// 刪除購物車中的單一商品
 			if (action.equals("DELETE")) {
-				String del = req.getParameter("del");
-				int d = Integer.parseInt(del);
-				buylist.remove(d);
-				
+				Integer productNo = new Integer(req.getParameter("delProductNo"));
+				for (int i = 0; i < buylist.size(); i++) { 
+					if (buylist.get(i).getProduct_no().equals(productNo)) { 
+						buylist.remove(i);
+						break;
+					}
+				}
 				session.setAttribute("shoppingcart", buylist);
 				
 				String url = "/front-end/productsell/shoppingCart.jsp";
@@ -56,7 +59,7 @@ public class ShoppingServlet extends HttpServlet {
 			}
 			
 			// 新增商品至購物車中
-			else if (action.equals("ADD") || action.equals("updateCount") || action.equals("ADDFromFav")) {
+			else if (action.equals("ADD") ||  action.equals("ADDFromFav")) {
 				
 				if (action.equals("ADDFromFav")) {
 					Integer product_no = new Integer(req.getParameter("product_no"));
@@ -83,6 +86,23 @@ public class ShoppingServlet extends HttpServlet {
 					}
 				}
 			}
+			
+			else if (action.equals("updateCount")) {
+				
+					product = getProduct(req);
+
+					if (buylist.contains(product)) {
+						ProductVO innerProductVO = buylist.get(buylist.indexOf(product));
+						innerProductVO.setProduct_quantity(product.getProduct_quantity());
+						Integer newProductVO = innerProductVO.getProduct_quantity();
+						// 避免重複點擊加入購物車之商品數量大於庫存
+						if(newProductVO > innerProductVO.getProduct_remaining()) {
+							innerProductVO.setProduct_quantity(innerProductVO.getProduct_quantity() - product.getProduct_quantity());
+						}
+					} else {
+						buylist.add(product);
+					}
+				}
 			
 			
 

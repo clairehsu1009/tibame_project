@@ -2,9 +2,13 @@ package com.emp.model;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Random;
 
 public class EmpVO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9191334111533849001L;
 	private Integer empno;
 	private String ename;
 	private String job;
@@ -20,6 +24,14 @@ public class EmpVO implements Serializable {
 	private String city;
 	private String dist;
 	private String link;
+	
+	@Override
+	public String toString() {
+		return "EmpVO [empno=" + empno + ", ename=" + ename + ", job=" + job + ", id=" + id + ", gender=" + gender
+				+ ", dob=" + dob + ", addr=" + addr + ", email=" + email + ", sal=" + sal + ", state=" + state
+				+ ", hiredate=" + hiredate + ", emp_pwd=" + emp_pwd + ", city=" + city + ", dist=" + dist + ", link="
+				+ link + "]";
+	}
 
 	public EmpVO() {
 		super();

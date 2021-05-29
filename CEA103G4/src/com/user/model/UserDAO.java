@@ -35,7 +35,7 @@ public class UserDAO implements UserDAO_interface {
 	private static final String INSERT_STMT =
 //			"INSERT INTO `USER` (`USER_ID`,`USER_PWD`,`USER_NAME`,`ID_CARD`,`USER_GENDER`,`USER_DOB`,`USER_MAIL`,`USER_PHONE`,`USER_MOBILE`,`CITY`,`TOWN`,`ZIPCODE`,`USER_ADDR`,`REGDATE`,`USER_POINT`,`VIOLATION`,`USER_STATE`,`USER_COMMENT`,`COMMENT_TOTAL`,`CASH`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			"INSERT INTO `USER` (`USER_ID`,`USER_PWD`,`USER_NAME`,`ID_CARD`,`USER_GENDER`,`USER_DOB`,`USER_MAIL`,`USER_PHONE`,`USER_MOBILE`,`CITY`,`TOWN`,`ZIPCODE`,`USER_ADDR`,`REGDATE`,`USER_POINT`,`VIOLATION`,`USER_STATE`,`USER_COMMENT`,`COMMENT_TOTAL`,`CASH`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 0, 0, 1, 0, 0, 0)";
-	private static final String GET_ALL_STMT = "SELECT * FROM `USER` ORDER BY `USER_ID`";
+	private static final String GET_ALL_STMT = "SELECT * FROM `USER` ORDER BY `VIOLATION` DESC";
 	private static final String GET_ONE_STMT = "SELECT * FROM USER WHERE `USER_ID` = ?";
 	private static final String DELETE = "DELETE FROM USER where USER_ID = ?";
 	private static final String UPDATE = "UPDATE `USER` SET `USER_NAME`=?, `USER_GENDER`=?, `USER_DOB`=?, `USER_MAIL`=?, `USER_PHONE`=?, `USER_MOBILE`=?, `CITY`=?, `TOWN`=?, `ZIPCODE`=?, `USER_ADDR`=? ,`USER_PIC`=? WHERE `USER_ID` = ?";
@@ -45,8 +45,10 @@ public class UserDAO implements UserDAO_interface {
 	private static final String UPDATE_NEWPSW = "UPDATE `USER` SET USER_PWD=? WHERE `USER_ID`=?";
 	private static final String UPDATE_USER_REPORT = "UPDATE USER SET USER_STATE =? WHERE USER_ID = ?;";
 	private static final String UPDATE_CASH = "UPDATE USER SET CASH=? WHERE USER_ID=?";
+	private static final String ADD_CASH = "UPDATE `USER` SET `CASH` = `CASH` + ? WHERE `USER_ID` = ?";
 
-	private static final String UPDATE_USER_RATING = "UPDATE USER SET USER_COMMENT = USER_COMMENT + ?, COMMENT_TOTAL = COMMENT_TOTAL + ?  WHERE USER_ID = ?";
+	private static final String UPDATE_USER_RATING = "UPDATE `USER` SET `USER_COMMENT` = `USER_COMMENT` + ?, `COMMENT_TOTAL` = `COMMENT_TOTAL` + ?  WHERE `USER_ID` = ?";
+	private static final String UPDATE_USER_VIOLATION = "UPDATE USER SET VIOLATION=? WHERE USER_ID = ?";
 
 	@Override
 	public void insert(UserVO userVO) {
@@ -504,11 +506,11 @@ public class UserDAO implements UserDAO_interface {
 
 	@Override
 	// 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
-	public List<UserVO> sendMail(UserVO userVO) {
+	public void sendMail(UserVO userVO) {
 		List<UserVO> list = new ArrayList<UserVO>();
 		String emailto = userVO.getUser_mail();
-
-		String subject = "新密碼通知";
+		String link = userVO.getLink();
+		String subject = "Mode Femme新密碼通知";
 
 		String GET_ONE_USER = "SELECT `USER_NAME` FROM USER WHERE `USER_ID` = ?";
 
@@ -530,9 +532,10 @@ public class UserDAO implements UserDAO_interface {
 				userVO.setUser_name(rs.getString("user_name"));
 			}
 
-			String ch_id = userVO.getUser_name();
+			String ch_name = userVO.getUser_name();
 			String passRandom = userVO.getUser_pwd();
-			String messageText = "Hello! " + ch_id + "\n" + "請改用此密碼登入: " + passRandom + "\n" + "並於登入後自行修改密碼！";
+			String messageText = "<h1>Hello! " + ch_name + "<br>" + "請改用此密碼登入: " + passRandom + "<br>" + "並於登入後重新修改密碼！"
+					+ " ( <a href=\"http://" + link + "/front-end/userLogin.jsp \"> 由此處登入 </a>) <h1>";
 
 			// 設定使用SSL連線至 Gmail smtp Server
 			Properties props = new Properties();
@@ -562,7 +565,8 @@ public class UserDAO implements UserDAO_interface {
 			// 設定信中的主旨
 			message.setSubject(subject);
 			// 設定信中的內容
-			message.setText(messageText);
+//			message.setText(messageText);
+			message.setContent(messageText, "text/html ;charset=UTF-8");
 
 			Transport.send(message);
 
@@ -601,8 +605,6 @@ public class UserDAO implements UserDAO_interface {
 				}
 			}
 		}
-
-		return list;
 	}
 
 	@Override
@@ -679,6 +681,7 @@ public class UserDAO implements UserDAO_interface {
 			}
 		}
 	}
+	
 
 	@Override
 	public void updateUserRating(UserVO userVO) {
@@ -689,7 +692,7 @@ public class UserDAO implements UserDAO_interface {
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE_USER_RATING);
-
+			
 			pstmt.setInt(1, userVO.getUser_comment());
 			pstmt.setInt(2, userVO.getComment_total());
 			pstmt.setString(3, userVO.getUser_id());
@@ -700,6 +703,18 @@ public class UserDAO implements UserDAO_interface {
 			throw new RuntimeException("database發生錯誤." + se.getMessage());
 		} finally {
 			if (pstmt != null) {
+		}
+			try {
+				pstmt.close();
+			} catch (SQLException se) {
+				se.printStackTrace(System.err);
+			}
+		}
+		if (con != null) {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
 				try {
 					pstmt.close();
 				} catch (SQLException se) {
@@ -777,6 +792,79 @@ public class UserDAO implements UserDAO_interface {
 
 			pstmt.setInt(1, userVO.getCash());
 			pstmt.setString(2, userVO.getUser_id());
+
+			int a = pstmt.executeUpdate();
+
+			// Handle any driver errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void addCash(UserVO userVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(ADD_CASH);
+
+			pstmt.setInt(1, userVO.getCash());
+			pstmt.setString(2, userVO.getUser_id());
+
+			pstmt.executeUpdate();
+			// Handle any driver errors
+					} catch (SQLException se) {
+						throw new RuntimeException("A database error occured. " + se.getMessage());
+						// Clean up JDBC resources
+					} finally {
+						if (pstmt != null) {
+							try {
+								pstmt.close();
+							} catch (SQLException se) {
+								se.printStackTrace(System.err);
+							}
+						}
+						if (con != null) {
+							try {
+								con.close();
+							} catch (Exception e) {
+								e.printStackTrace(System.err);
+							}
+						}
+					}
+		}
+	public void updateUserViolation(String user_id, Integer violation) {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_USER_VIOLATION);
+
+			pstmt.setInt(1, violation);
+			pstmt.setString(2, user_id);
 
 			int a = pstmt.executeUpdate();
 

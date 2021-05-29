@@ -21,61 +21,52 @@ import com.product.model.ProductService;
 import com.product.model.ProductVO;
 
 @WebServlet("/Favorite")
-public class Favorite  extends HttpServlet  {
-
+public class Favorite extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
-	public void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException, IOException {
+
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
-		
+
 		HttpSession session = req.getSession();
-	
-	List<ProductVO> favorites = (Vector<ProductVO>) session.getAttribute("favorite");
 
-	ProductVO product =  new ProductVO();
-	if("addFavorite".equals(action)) {
-		Integer product_no = new Integer(req.getParameter("product_no"));
-		ProductService productSvc = new ProductService();
-		product = productSvc.getFavorite(product_no);
-		
-		if (favorites == null) {
-			favorites = new Vector<ProductVO>();
-			favorites.add(product);
-		}else if (!(favorites.contains(product))) {
-			favorites.add(product);
-			
+		List<ProductVO> favorites = (Vector<ProductVO>) session.getAttribute("favorite");
+
+		ProductVO product = new ProductVO();
+		if ("addFavorite".equals(action)) {
+			Integer product_no = new Integer(req.getParameter("product_no"));
+			ProductService productSvc = new ProductService();
+			product = productSvc.getFavorite(product_no);
+
+			if (favorites == null) {
+				favorites = new Vector<ProductVO>();
+				favorites.add(product);
+			} else if (!(favorites.contains(product))) {
+				favorites.add(product);
+			}
+		}
+		if (action.equals("remove")) {
+			String index = req.getParameter("index");
+			int removeindex = Integer.parseInt(index);
+			favorites.remove(removeindex);
+			session.setAttribute("favorite", favorites);
+			return;
 		}
 		
-		}
-	
-	if (action.equals("remove")) {
-		String index = req.getParameter("index");
-		int removeindex = Integer.parseInt(index);
-		favorites.remove(removeindex);
 		session.setAttribute("favorite", favorites);
-		return;
-
+		req.setAttribute("productVO", product);
+		res.setContentType("text/html; charset=utf-8");
+		PrintWriter out = res.getWriter();
+		JSONObject jsonObj = new JSONObject();
+		try {
+			jsonObj.put("results", favorites);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-	
-
-	session.setAttribute("favorite", favorites);
-	req.setAttribute("productVO", product);
-	res.setContentType("text/html; charset=utf-8");
-	PrintWriter out = res.getWriter();
-	JSONObject jsonObj = new JSONObject();
-	try {
-		jsonObj.put("results", favorites);
-	} catch (JSONException e) {
-		e.printStackTrace();
+		out.println(jsonObj.toString());
+		out.flush();
+		out.close();
 	}
-	out.println(jsonObj.toString());
-	out.flush();
-	out.close();
 }
-
-}
-

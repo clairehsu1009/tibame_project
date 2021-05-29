@@ -128,19 +128,21 @@
 									type="text">
 							</div>
 
-							<jsp:useBean id="empSvc" scope="page"
-								class="com.emp.model.EmpService" />
-							<div class="form-group">
-								<label for="empno" class="col-sm-2 col-form-label">管理員編號</label>
-								<div class="col-sm-10">
-									<select size="1" class="form-control" name="empno">
-										<c:forEach var="empVO" items="${empSvc.all}">
-											<option value="${empVO.empno}"
-												${(liveVO.empno==empVO.empno)? 'selected':'' }>${empVO.empno}
-										</c:forEach>
-									</select>
-								</div>
-							</div>
+<%-- 							<jsp:useBean id="empSvc" scope="page" --%>
+<%-- 								class="com.emp.model.EmpService" /> --%>
+<!-- 							<div class="form-group"> -->
+<!-- 								<label for="empno" class="col-sm-2 col-form-label">管理員編號</label> -->
+<!-- 								<div class="col-sm-10"> -->
+<!-- 									<select size="1" class="form-control" name="empno"> -->
+<%-- 										<c:forEach var="empVO" items="${empSvc.all}"> --%>
+<%-- 											<option value="${empVO.empno}" --%>
+<%-- 												${(liveVO.empno==empVO.empno)? 'selected':'' }>${empVO.empno} --%>
+<%-- 										</c:forEach> --%>
+<!-- 									</select> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 					預設14001 -->
+					<input name="empno" type="hidden" value="14001">
 
 							<div class="form-group">
 								<label for="live_photo" class="col-sm-2 col-form-label">直播預覽圖</label>

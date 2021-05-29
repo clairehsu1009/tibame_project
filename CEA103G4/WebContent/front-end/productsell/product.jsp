@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page import="com.product.model.*"%>
 <%@ page import="com.product_type.model.*"%>
 <%@ page import="com.product_report.model.*"%>
@@ -11,6 +12,8 @@
 <%
 	ProductVO productVO = (ProductVO) request.getAttribute("productVO");
 
+	UserVO userVO = (UserVO) session.getAttribute("account");
+	session.setAttribute("userVO", userVO);
 
 %>
 <jsp:useBean id="product_typeSvc" scope="page"
@@ -23,7 +26,8 @@
 	class="com.user.model.UserService" />
 <jsp:useBean id="seller_followSvc" scope="page"
 	class="com.seller_follow.model.Seller_FollowService" />
-
+<jsp:useBean id="orderSvc" scope="page"
+	class="com.order.model.OrderService" />
 
 <!DOCTYPE html>
 <html>
@@ -97,7 +101,7 @@
 						<a href="${pageContext.request.contextPath}/front-end/index.jsp"><i
 							class="fa fa-home"></i> Home</a> <a
 							href="${pageContext.request.contextPath}/front-end/productsell/shop.jsp">Shop</a>
-						<span>Detail</span>
+						<span>商品詳情</span>
 					</div>
 				</div>
 			</div>
@@ -109,8 +113,8 @@
 	<section class="product-shop spad page-details">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-3">
-					<div class="filter-widget">
+				<div class="col-lg-3 productLeft">
+					<div class="filter-widget col-md-12 col-4" id="RWDpd">
 						<h4 class="fw-title">商品分類</h4>
 						<ul class="filter-catagories">
 							<c:forEach var="product_typeVO" items="${list2}" begin="0"
@@ -120,7 +124,7 @@
 							</c:forEach>
 						</ul>
 					</div>
-					<div class="filter-widget">
+					<div class="filter-widget col-md-12 col-7" id="RWDsm">
 						<h4 class="fw-title">Price</h4>
 						<div class="filter-range-wrap">
 							<div class="range-slider">
@@ -145,7 +149,7 @@
 					<div class="filter-widget">
 						<h4 class="fw-title">進階查詢</h4>
 						<div class="fw-all-choose" id="fw-all-choose">
-							<div class="fw-cs" id="fw-cs">
+							<div class="fw-cs col-md-6 col-4" id="fw-cs">
 								<c:forEach var="product_typeVO" items="${list2}" begin="0"
 									end="${list2.size()}">
 									<div class="cs-item">
@@ -158,7 +162,7 @@
 									</div>
 								</c:forEach>
 							</div>
-							<div class="fw-price">
+							<div class="fw-price col-md-6 col-6">
 								<div class="sc-item">
 									<input type="radio" id="a-price" name="productPrice" value="A" />
 									<label for="a-price">$300<i
@@ -188,7 +192,7 @@
 				<!-- 左邊功能列結束 -->
 
 				<!-- 右邊商品區塊 -->
-				<div class="col-lg-9">
+				<div class="col-lg-9 productRight">
 					<div class="row">
 						<div class="col-lg-6">
 							<div class="product-pic-zoom">
@@ -202,7 +206,7 @@
 								<div class="pd-title">
 									<!-- 動態串商品名 -->
 									<h3>${productVO.product_name}</h3>
-									<a href="#" class="heart-icon"><i
+									<a href="javascript:void(0)" class="heart-icon"><i
 										class="icon_heart_alt" data-id="${productVO.product_no}"></i></a>
 								</div>
 								<div class="pd-desc">
@@ -223,9 +227,11 @@
 									</form>
 									<ul class="pd-tags">
 										<li><span id="maxRemaining"
-											value="${productVO.product_remaining}">商品數量：${productVO.product_remaining}</span>
+											value="${productVO.product_remaining}">剩餘數量：${productVO.product_remaining}</span>
 										</li>
-										<!-- <li><span>TAGS</span>: Clothing, T-shirt, Woman</li> -->
+										<li><span 
+											>已售出：${productVO.product_sold}</span>
+										</li>
 									</ul>
 								</c:if>
 								<c:if test="${productVO.product_state != 1}">
@@ -233,21 +239,17 @@
 										<button type="button" class="btn btn-danger">此商品已下架</button>
 									</div>
 								</c:if>
-								<div class="pd-share">
-									<div class="pd-social">
-										<a href="#"><i class="ti-facebook"></i></a> <a href="#"><i
-											class="ti-twitter-alt"></i></a> <a href="#"><i
-											class="ti-linkedin"></i></a>
-									</div>
-								</div>
+<!-- 								<div class="pd-share"> -->
+<!-- 									<div class="pd-social"> -->
+<!-- 										<a href="#"><i class="ti-facebook"></i></a> <a href="#"><i -->
+<!-- 											class="ti-twitter-alt"></i></a> <a href="#"><i -->
+<!-- 											class="ti-linkedin"></i></a> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
 								<div class="pd-fungroup">
-									<c:if test="${productVO.product_state == 1}">
-										<div>
-											<a href="#" class="primary-btn pd-buy">直接購買</a>
-										</div>
-									</c:if>
 									<div class="pd-function">
-										<a href="#" class="primary-btn" value="${productVO.product_state}">私訊賣家</a>
+										<a href="javascript:void(0)" class="primary-btn" id="chat-seller">私訊賣家</a>
+<!-- 										<a href="javascript:void(0)" class="primary-btn chat-seller" id="chat_seller">私訊賣家</a> -->
 <!-- 										<FORM METHOD="post" -->
 <%-- 											ACTION="<%=request.getContextPath()%>/front-end/message/chatMessage.do"> --%>
 <%-- 											<input type="hidden" name="user_id" value="${userVO.user_id}"> --%>
@@ -304,7 +306,7 @@
 								<li><a data-toggle="tab" href="#tab-2" role="tab">關於賣家</a>
 								</li>
 								<li><a data-toggle="tab" href="#tab-3" role="tab">賣家評價
-										(02)</a></li>
+										(${userSvc.getOneUser(productVO.user_id).comment_total})</a></li>
 							</ul>
 						</div>
 						<div class="tab-item-content">
@@ -337,13 +339,23 @@
 											</tr>
 											<tr>
 												<td class="p-catagory">賣家評價</td>
+												<c:if test="${userSvc.getOneUser(productVO.user_id).user_comment == 0}">
+												<td><div class="pd-rating"></div></td>
+												</c:if>
+												<c:if test="${userSvc.getOneUser(productVO.user_id).user_comment != 0}">
 												<td>
-													<div class="pd-rating">
-														<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star-o"></i> <span>(5)</span>
-													</div>
-												</td>
+												<div class="pd-rating">
+                        	  <input type="hidden" name="srating" value="<fmt:formatNumber type="number" value="${userSvc.getOneUser(productVO.user_id).user_comment/userSvc.getOneUser(productVO.user_id).comment_total}" maxFractionDigits="0"/>" id="con"/>
+                        	  <i class="fa fa-star-o" id="s1"></i>
+							  <i class="fa fa-star-o" id="s2"></i>
+							  <i class="fa fa-star-o" id="s3"></i>
+							  <i class="fa fa-star-o" id="s4"></i>
+							  <i class="fa fa-star-o" id="s5"></i>
+							  <span>(${userSvc.getOneUser(productVO.user_id).comment_total})</span>
+						</div>
+						</td>
+                        </c:if>
+
 											</tr>
 											<tr>
 												<td class="p-catagory">加入時間</td>
@@ -363,71 +375,50 @@
 								</div>
 								<div class="tab-pane fade" id="tab-3" role="tabpanel">
 									<div class="customer-review-option">
-										<h4>2 Comments</h4>
+										<h4>${userSvc.getOneUser(productVO.user_id).comment_total} 評價</h4>
+										<c:if test="${userSvc.getOneUser(productVO.user_id).user_comment != 0}">
 										<div class="comment-option">
+										<c:forEach var="seller" items="${orderSvc.getAllByID2(productVO.user_id)}" begin="0" end="${list2.size()}">
 											<div class="co-item">
 												<div class="avatar-pic">
-													<img
-														src="${pageContext.request.contextPath}/front-template/images/productsell/avatar-1.png"
-														alt="" />
+													<img src="${pageContext.request.contextPath}/UserShowPhoto?user_id=${seller.user_id}" alt="" />
 												</div>
 												<div class="avatar-text">
 													<div class="at-rating">
-														<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star-o"></i>
+													<input type="hidden"  value="${seller.srating}"  id="star${seller.order_no}"/>
+                        	 							 <i class="fa fa-star-o" id="s1${seller.order_no}"></i>
+							 							 <i class="fa fa-star-o" id="s2${seller.order_no}"></i>
+							 							 <i class="fa fa-star-o" id="s3${seller.order_no}"></i>
+							 							 <i class="fa fa-star-o" id="s4${seller.order_no}"></i>
+							 							 <i class="fa fa-star-o" id="s5${seller.order_no}"></i>
 													</div>
 													<h5>
-														Brandon Kelley <span>27 Aug 2019</span>
+														${seller.user_id} <span><fmt:formatDate value="${seller.order_date}" pattern="yyyy-MM-dd" /></span>
 													</h5>
-													<div class="at-reply">Nice !</div>
+													<div class="at-reply">${seller.srating_content}</div>
 												</div>
 											</div>
-											<div class="co-item">
-												<div class="avatar-pic">
-													<img
-														src="${pageContext.request.contextPath}/front-template/images/productsell/avatar-2.png"
-														alt="" />
-												</div>
-												<div class="avatar-text">
-													<div class="at-rating">
-														<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-															class="fa fa-star-o"></i>
-													</div>
-													<h5>
-														Roy Banks <span>27 Aug 2019</span>
-													</h5>
-													<div class="at-reply">Nice !</div>
-												</div>
-											</div>
+											 </c:forEach>
 										</div>
-										<div class="personal-rating">
-											<h6>Your Ratind</h6>
-											<div class="rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o"></i>
-											</div>
-										</div>
-										<div class="leave-comment">
-											<h4>Leave A Comment</h4>
-											<form action="#" class="comment-form">
-												<div class="row">
-													<div class="col-lg-6">
-														<input type="text" placeholder="Name" />
-													</div>
-													<div class="col-lg-6">
-														<input type="text" placeholder="Email" />
-													</div>
-													<div class="col-lg-12">
-														<textarea placeholder="Messages"></textarea>
-														<button type="submit" class="site-btn">Send
-															message</button>
-													</div>
-												</div>
-											</form>
-										</div>
+									</c:if>
+<!-- 										<div class="leave-comment"> -->
+<!-- 											<h4>Leave A Comment</h4> -->
+<!-- 											<form action="#" class="comment-form"> -->
+<!-- 												<div class="row"> -->
+<!-- 													<div class="col-lg-6"> -->
+<!-- 														<input type="text" placeholder="Name" /> -->
+<!-- 													</div> -->
+<!-- 													<div class="col-lg-6"> -->
+<!-- 														<input type="text" placeholder="Email" /> -->
+<!-- 													</div> -->
+<!-- 													<div class="col-lg-12"> -->
+<!-- 														<textarea placeholder="Messages"></textarea> -->
+<!-- 														<button type="submit" class="site-btn">Send -->
+<!-- 															message</button> -->
+<!-- 													</div> -->
+<!-- 												</div> -->
+<!-- 											</form> -->
+<!-- 										</div> -->
 									</div>
 								</div>
 							</div>
@@ -459,9 +450,28 @@
 	 <script src="${pageContext.request.contextPath}/front-template/js/products-search.js" ></script>
     
     
-    	<script>
+    <script>
+	 var chatSeller = document.getElementById("chat-seller");
+// 	 var miniChat = document.querySelector(".mini-chat");
+	 chatSeller.addEventListener("click",function(){
+		closelist.style.visibility="hidden";
+		if("${userVO.user_id}" == ""){
+			login();
+		}else if("${userVO.user_id}" == "${productVO.user_id}"){
+			Swal.fire({
+	  			  icon: 'error',
+	  			  title: '很抱歉,無法私訊自己',
+	  			  showConfirmButton: false,
+	  			  timer: 1500
+	  			});
+		}else{
+		miniChat.style.visibility="visible";
+		
+		var friend = "${productVO.user_id}";
+		addListener2(friend);
+		}
+	});
 
-	
 	function sendQuery(datas){ 
 		
 		$.ajax({ 
@@ -474,8 +484,7 @@
 					Swal.fire('很抱歉,查無此商品');
 	            } else {
 	            	var data = JSON.stringify(result);
-<%-- 	            	window.location.href='<%=request.getContextPath()%>/ProductSearch?action=productToShop'; --%>
-					window.location.href='<%=request.getContextPath()%>/front-end/productsell/shop.jsp?data='+encodeURI(data);
+					window.location.href=('<%=request.getContextPath()%>/front-end/productsell/shop.jsp?data='+encodeURI(data));
 
 	            }
 		  }, 
@@ -646,7 +655,9 @@
     		"密碼"+'<input id="PWD" class="swal2-input"  type="password">',
     		showCloseButton: true,
     		confirmButtonText: `登入`,
-  }).then(function(result){
+  		});
+  		$(".swal2-confirm").click(function(){
+  			
 			if($("#userID").val().trim().length != 0 && $("#PWD").val().trim().length != 0){				
   			$.ajax({ 
 	  			  url:"<%=request.getContextPath()%>/FrondEnd_LoginHandler",
@@ -657,7 +668,6 @@
 	  				  "action": "signIn_ajax"
 	  			  },
 	  			  success: function(result) {
-
 	  				if (result.length === 0 || result === ""){
 			  			Swal.fire({
 				  			  icon: 'error',
@@ -797,15 +807,59 @@
 								  timer: 1500
 								});
 							  },
-				})
-			 }
-			} 
+					})
+				 }
+				} 
 			}
-	  
-	  
-       	</script>
+	         $(document).ready(function(){
+	        		switch($("#con").val()){
+	        		case "1":
+	        			$("#s1").removeClass("fa fa-star-o").addClass("fa fa-star");
+	        			break;
+	        		case "2":
+	        			$("#s1,#s2").removeClass("fa fa-star-o").addClass("fa fa-star");
+	        			break;
+	        		case "3":
+	        			$("#s1,#s2,#s3").removeClass("fa fa-star-o").addClass("fa fa-star");
+	        			break;
+	        		case "4":
+	        			$("#s1,#s2,#s3,#s4").removeClass("fa fa-star-o").addClass("fa fa-star");
+	        			break;
+	        		case "5":
+	        			$("#s1,#s2,#s3,#s4,#s5").removeClass("fa fa-star-o").addClass("fa fa-star");
+	        			break;
+	        		default:
 
+	        		}
+	        	})
+	  
+    </script>
+	
+	<c:forEach var="seller" items="${orderSvc.getAllByID2(productVO.user_id)}" begin="0" end="${list2.size()}">
+	<script>
+    $(document).ready(function(){
+		switch($("#star${seller.order_no}").val()){
+		case "1":
+			$("#s1${seller.order_no}").removeClass("fa fa-star-o").addClass("fa fa-star");
+			break;
+		case "2":
+			$("#s1${seller.order_no},#s2${seller.order_no}").removeClass("fa fa-star-o").addClass("fa fa-star");
+			break;
+		case "3":
+			$("#s1${seller.order_no},#s2${seller.order_no},#s3${seller.order_no}").removeClass("fa fa-star-o").addClass("fa fa-star");
+			break;
+		case "4":
+			$("#s1${seller.order_no},#s2${seller.order_no},#s3${seller.order_no},#s4${seller.order_no}").removeClass("fa fa-star-o").addClass("fa fa-star");
+			break;
+		case "5":
+			$("#s1${seller.order_no},#s2${seller.order_no},#s3${seller.order_no},#s4${seller.order_no},#s5${seller.order_no}").removeClass("fa fa-star-o").addClass("fa fa-star");
+			break;
+		default:
 
+		}
+	})
+	</script>
+	</c:forEach>
 
 </body>
 </html>

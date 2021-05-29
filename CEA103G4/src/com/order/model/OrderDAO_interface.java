@@ -2,7 +2,7 @@ package com.order.model;
 
 import java.util.*;
 
-import com.live_order.model.Live_orderVO;
+import com.order_detail.model.Order_detailVO;
 
 public interface OrderDAO_interface {
 	public Object insert(OrderVO orderVO);
@@ -16,4 +16,7 @@ public interface OrderDAO_interface {
 	public void updateShipped(List<Integer> list);
 	public void updateUnshipped(List<Integer> list);
 	public void updateSrating(OrderVO orderVO);
+	public void insertWithOrderList(OrderVO orderVO , List<Order_detailVO> list);
+	public Set<Order_detailVO> getDetailsByNo(Integer order_no);
+	public void cancel(Integer order_no);
 }

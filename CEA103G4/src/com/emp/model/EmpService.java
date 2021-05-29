@@ -36,8 +36,7 @@ public class EmpService {
 	}
 
 	public EmpVO updateEmp(Integer empno, String ename, String job, String id, Integer gender, java.sql.Date dob,
-			String city,String dist,String addr,String email, Double sal, Integer state, java.sql.Date hiredate, 
-			String empPwd) {
+			String city,String dist,String addr,String email, Double sal, Integer state, java.sql.Date hiredate) {
 
 		EmpVO empVO = new EmpVO();
 
@@ -54,7 +53,7 @@ public class EmpService {
 		empVO.setSal(sal);
 		empVO.setState(state);
 		empVO.setHiredate(hiredate);
-		empVO.setEmp_pwd(empPwd);
+
 
 		dao.update(empVO);
 

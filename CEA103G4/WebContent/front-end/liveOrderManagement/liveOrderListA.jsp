@@ -84,7 +84,7 @@ table td, table tr, table th {
 							<tr>
 								<th>#</th>
 								<!-- 								<th>訂單時間</th> -->
-								<th>付款截止時間</th>
+								<th>收貨地址</th>
 								<th>訂單狀態</th>
 								<th>訂單金額</th>
 								<th>訂單運費</th>
@@ -128,8 +128,11 @@ table td, table tr, table th {
 									</td>
 									<%-- 									<td><fmt:formatDate value="${live_orderVO.order_date}" --%>
 									<%-- 											pattern="yyyy-MM-dd HH:mm:ss" /></td> --%>
-									<td><fmt:formatDate value="${live_orderVO.pay_deadline}"
-											pattern="yyyy-MM-dd HH:mm:ss" /></td>
+									<td>
+<%-- 									<fmt:formatDate value="${live_orderVO.pay_deadline}" --%>
+<%-- 											pattern="yyyy-MM-dd HH:mm:ss" /> --%>
+										${live_orderVO.zipcode}${live_orderVO.city}${live_orderVO.town}${live_orderVO.rec_addr}
+									</td>
 									<td>${(live_orderVO.order_state==0)? '未付款':''}
 										${(live_orderVO.order_state==1)? '已付款':''}
 										${(live_orderVO.order_state==2)? '棄單':''}</td>
@@ -158,7 +161,7 @@ table td, table tr, table th {
 										<FORM METHOD="post"
 											ACTION="<%=request.getContextPath()%>/live_order/live_order.do"
 											style="margin-bottom: 0px;">
-											<input type="submit" class="btn btn-info" value="修改">
+											<input type="submit" class="btn btn-info" id="bt${live_orderVO.live_order_no}" value="修改">
 											<input type="hidden" name="live_order_no"
 												value="${live_orderVO.live_order_no}"> <input
 												type="hidden" name="action" value="getOne_For_UpdateA">
@@ -218,5 +221,14 @@ table td, table tr, table th {
 	<!-- Page specific javascripts-->
 	<script type="text/javascript"
 		src="<%=request.getContextPath()%>/back-template/docs/js/plugins/chart.js"></script>
+		<script>
+<c:forEach var="live_orderVO" items="${live_orderSvc.getAllByID(userVO.user_id)}">
+	<c:if test="${live_orderVO.logistics_state==1 }">
+	
+		$("#bt${live_orderVO.live_order_no}" ).css("display","none");
+
+	</c:if>
+</c:forEach>
+</script>
 </body>
 </html>

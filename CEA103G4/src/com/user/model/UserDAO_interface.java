@@ -23,7 +23,7 @@ public interface UserDAO_interface {
 	
 	public UserVO login(String user_id, String user_pwd);
 	
-	public List<UserVO> sendMail(UserVO userVO);
+	public void sendMail(UserVO userVO);
 	
 	public void getPassword_Update(UserVO userVO);
 	
@@ -32,7 +32,12 @@ public interface UserDAO_interface {
 	public void update_user_report(UserVO userVO);
 	
 	public void updateUserRating(UserVO userVO);
+	
 	Optional<UserVO> findUserPic(String user_id);
 	
 	public void updateCash(UserVO userVO);
+	
+	public void addCash(UserVO userVO);
+	
+	public void updateUserViolation(String user_id, Integer violation);
 }

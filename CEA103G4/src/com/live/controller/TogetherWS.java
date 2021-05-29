@@ -41,7 +41,7 @@ public class TogetherWS {
 		sessionsSet.put(live_no, sessionsMap);
 		
 		/* Sends all the connected users to the new user */
-		Set<String> userNames = sessionsMap.keySet();
+		Set<String> userNames = sessionsMap.keySet(); 
 
 		State stateMessage = new State("open", userName, userNames);
 
@@ -49,9 +49,11 @@ public class TogetherWS {
 
 		Collection<Session> sessions = sessionsMap.values();
 		for (Session session : sessions) {
-			if (session.isOpen()) {
-				session.getAsyncRemote().sendText(stateMessageJson);
-			}
+			
+				if (session.isOpen()) {
+					session.getAsyncRemote().sendText(stateMessageJson);
+				}
+			
 		}
 
 		String text = String.format("Session ID = %s, connected; userName = %s%nusers: %s", userSession.getId(),
@@ -83,27 +85,39 @@ public class TogetherWS {
 				String max0S = gson.toJson(max0);
 				BidVO bid = new BidVO("history", sender, live_no, product_no, max0S);
 				String currentBid = gson.toJson(bid);
-				if (userSession != null && userSession.isOpen()) {
-					userSession.getAsyncRemote().sendText(currentBid);
-					return;
-				}
+				
+					if (userSession != null && userSession.isOpen()) {
+						try {
+							userSession.getBasicRemote().sendText(currentBid);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return;
+					}
+				
 			} else {
 				if (userSession != null && userSession.isOpen()) {
 					BidVO bid = new BidVO("history", sender, live_no, product_no, historyData);
 					String currentBid = gson.toJson(bid);
-					userSession.getAsyncRemote().sendText(currentBid);
-					return;
+					
+						if (userSession != null && userSession.isOpen()) {
+							try {
+								userSession.getBasicRemote().sendText(currentBid);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return;
+						}
+					
 				}
 			}
 
-		}
-		
-		ConcurrentHashMap<String, Session> sessionsMap = sessionsSet.get(live_no);
-
-		
-		Set<String> others = sessionsMap.keySet();
-
-		if ("getMax".equals(type)) {
+		} else if ("getMax".equals(type)) {
+			ConcurrentHashMap<String, Session> sessionsMap = sessionsSet.get(live_no);
+			Set<String> others = sessionsMap.keySet();
+			
 			// 64有包裝成BIDVO
 
 			MaxVO max = gson.fromJson(chatBid.getMessage(), MaxVO.class);
@@ -112,10 +126,11 @@ public class TogetherWS {
 			if (max.getTimeStart().equals("0")) {
 				// 直接存進rd
 				JedisHandleBid.saveMaxPrice(max.getLive_no(), max.getProduct_no(), chatBid.getMessage());
+
 				finalMax = chatBid.getMessage();
 			} else if (max.getTimeStart().equals("1")) {
 				// 比較大小 存進rd
-				System.out.println("TEST"+message);
+
 				String presentMax = JedisHandleBid.getMaxPrice(max.getLive_no(), max.getProduct_no());
 				MaxVO presentMaxVO = gson.fromJson(presentMax, MaxVO.class);
 				if (presentMaxVO == null) {// 如果最大值空的
@@ -123,10 +138,16 @@ public class TogetherWS {
 					MaxVO bye = new MaxVO("max", sender, live_no, "", "0", product_no, "3", "");
 					finalMax = gson.toJson(bye);
 				} else {
+
 					if ((Integer.parseInt(presentMaxVO.getMaxPrice()) < Integer.parseInt(max.getMaxPrice()))) {
 						JedisHandleBid.saveMaxPrice(max.getLive_no(), max.getProduct_no(), chatBid.getMessage());
+						finalMax = chatBid.getMessage();// 之後上面改寫 這行要移到else以外
+					} else {
+						max.setMaxPrice(presentMaxVO.getMaxPrice());
+						max.setUser_id(presentMaxVO.getUser_id());
+						finalMax =  gson.toJson(max);
 					}
-					finalMax = chatBid.getMessage();// 之後上面改寫 這行要移到else以外
+
 				}
 			} else if (max.getTimeStart().equals("2")) {
 				// 不用
@@ -134,18 +155,34 @@ public class TogetherWS {
 			}
 			for (String other : others) {
 				Session receiverSession = sessionsMap.get(other);
-				if (userSession != null && userSession.isOpen()) {
-					receiverSession.getAsyncRemote().sendText(finalMax);
-				}
+				
+					if (receiverSession != null && receiverSession.isOpen()) {
+						try {
+							receiverSession.getBasicRemote().sendText(finalMax);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				
 			}
 
 		} else {
+			ConcurrentHashMap<String, Session> sessionsMap = sessionsSet.get(live_no);
+			Set<String> others = sessionsMap.keySet();
+
 			for (String other : others) {
 				Session receiverSession = sessionsMap.get(other);
-				if (userSession != null && userSession.isOpen()) {
-					receiverSession.getAsyncRemote().sendText(message);
-
-				}
+				
+					if (receiverSession != null && receiverSession.isOpen()) {
+						try {
+							receiverSession.getBasicRemote().sendText(message);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				
 			}
 
 		}

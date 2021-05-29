@@ -28,6 +28,10 @@ public class UpdateUserPwdServlet extends HttpServlet {
 		if ("updateUserPwd".equals(action)) {
 			Map<String,String> errorMsgs = new LinkedHashMap<String,String>();
 			req.setAttribute("errorMsgs", errorMsgs);
+			
+			Map<String, String> notifyMsgs = new LinkedHashMap<String, String>();
+			req.setAttribute("notifyMsgs", notifyMsgs);
+			
 			try {
 				/***********************1.接收請求參數 - 輸入格式的錯誤處理*************************/
 				String user_id = req.getParameter("user_id").trim();
@@ -77,9 +81,18 @@ public class UpdateUserPwdServlet extends HttpServlet {
 					return;
 				}
 				userVO = userSvc.newPassword_Update(user_id,user_newNameCheck);
+				
+				// 密碼更改成功後登出並導回登入頁面
+				HttpSession session = req.getSession();
+				if(!session.isNew()) {
+					//使用者登出
+			        session.invalidate();
+				}
 				/***************************4.修改完成,準備轉交(Send the Success view)***********/
-				String url = "/front-end/protected/userIndex.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交userIndex.jsp
+				notifyMsgs.put("changePwd", "更改密碼成功！請重新登入~");
+				req.setAttribute("userVO", userVO);// 資料庫insert成功後,正確的userVO物件,存入req
+				String url = "/front-end/userLogin.jsp";
+				RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交userLogin.jsp
 				successView.forward(req, res);
 				/***************************其他可能的錯誤處理**********************************/
 			} catch (Exception e) {

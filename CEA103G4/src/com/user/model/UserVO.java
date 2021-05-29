@@ -25,6 +25,7 @@ public class UserVO implements Serializable{
 	private Integer comment_total;
 	private Integer cash;
 	private byte[] user_pic;
+	private String link;
 	
 	public String getUser_id() {
 		return user_id;
@@ -152,7 +153,11 @@ public class UserVO implements Serializable{
 	public void setUser_pic(byte[] user_pic) {
 		this.user_pic = user_pic;
 	}
-	
-	
+	public String getLink() {
+		return link;
+	}
+	public void setLink(String link) {
+		this.link = link;
+	}
 
 }

@@ -85,6 +85,15 @@
 
  <script>
  
+
+	const data =  JSON.parse(localStorage.getItem("favorite"));
+	const favPath = "<%=request.getContextPath()%>";
+	if (data !== null) {
+		favoriteContent(data,favPath);
+	}
+	
+	
+	
  
 	function removeSession (index) {
 
@@ -95,8 +104,13 @@
 				  "index":index,
 				  "action": "remove"
 			  },
-			  success: function(res) {
-
+			  success: function() {
+				  Swal.fire({
+					  icon: 'success',
+					  title: '已移除收藏清單',
+					  showConfirmButton: false,
+					  timer: 1000
+					});
 				  }	        
 	});
 }
@@ -115,7 +129,6 @@
 				  $("#carts").html(cartproducts); 
 				  
 				  var carRes  = JSON.parse(res)
-//				  console.log(carRes["results"].length);
 				  var ibaCount = carRes["results"].length;
 				  $("#iba").html(ibaCount);
 

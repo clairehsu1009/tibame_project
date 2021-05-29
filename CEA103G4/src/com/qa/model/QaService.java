@@ -11,27 +11,31 @@ public class QaService {
 		dao = new QaDAO();
 	}
 
-	public QaVO addQa(Integer empno, Date qa_date, String qa_content) {
+	public QaVO addQa(Integer empno, Date qa_date, Integer qa_type, String question, String answer) {
 
 		QaVO qaVO = new QaVO();
 
 		qaVO.setEmpno(empno);
 		qaVO.setQa_date(qa_date);
-		qaVO.setQa_content(qa_content);
+		qaVO.setQa_type(qa_type);
+		qaVO.setQuestion(question);
+		qaVO.setAnswer(answer);
 		
 		dao.insert(qaVO);
 
 		return qaVO;
 	}
 
-	public QaVO updateQa(Integer qa_no, Integer empno, Date qa_date, String qa_content) {
+	public QaVO updateQa(Integer qa_no, Integer empno, Date qa_date, Integer qa_type, String question, String answer) {
 		
 		QaVO qaVO = new QaVO();
 
 		qaVO.setQa_no(qa_no);
 		qaVO.setEmpno(empno);
 		qaVO.setQa_date(qa_date);
-		qaVO.setQa_content(qa_content);
+		qaVO.setQa_type(qa_type);
+		qaVO.setQuestion(question);
+		qaVO.setAnswer(answer);
 		
 		dao.update(qaVO);
 		

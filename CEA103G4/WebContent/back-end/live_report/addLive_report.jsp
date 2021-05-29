@@ -8,67 +8,48 @@
 
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>直播檢舉資料新增 - addLive_report.jsp</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>新增直播檢舉</title>
+<link rel="icon" href="${pageContext.request.contextPath}/front-template/images/favicon.ico" type="image/x-icon">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
+<!-- Main CSS-->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/back-template/docs/css/main.css">
+<!-- Font-icon css-->
+<link rel="stylesheet" type="text/css"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/datetimepicker/jquery.datetimepicker.css" />
 <style>
-table#table-1 {
-	background-color: #CCCCFF;
-	border: 2px solid black;
-	text-align: center;
+td {
+padding: 15px 20px 5px 0px;
 }
-
-table#table-1 h4 {
-	color: red;
-	display: block;
-	margin-bottom: 1px;
-}
-
-h4 {
-	color: blue;
-	display: inline;
+.app-title {
+margin: -30px -30px 0px;
 }
 </style>
 
-<style>
-table {
-	width: 450px;
-	background-color: white;
-	margin-top: 1px;
-	margin-bottom: 1px;
-}
-
-table, th, td {
-	border: 0px solid #CCCCFF;
-}
-
-th, td {
-	padding: 1px;
-}
-</style>
 
 </head>
-<body bgcolor='white'>
-
-	<table id="table-1">
-		<tr>
-			<td>
-				<h3>直播檢舉新增 - addLive_report.jsp</h3>
-			</td>
-			<td>
-				<h4>
-					<a href="<%=request.getContextPath()%>/back-end/live_report/select_page.jsp"><img src="${pageContext.request.contextPath}/images/tomcat.png"
-						width="100" height="100" border="0">回首頁</a>
-				</h4>
-			</td>
-		</tr>
-	</table>
-
-	<h3>直播檢舉新增:</h3>
-
+<body bgcolor='white' class="app sidebar-mini rtl">
+<jsp:include page="/back-end/backendMenu.jsp" />
+<main class="app-content">
+	<div class="app-title">
+		<div>
+			<h1>
+				<i class="fa fa-th-list"></i> 新增直播檢舉
+			</h1>
+			
+		</div>
+		<ul class="app-breadcrumb breadcrumb">
+			<li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+			<li class="breadcrumb-item"><a
+				href="<%=request.getContextPath()%>/back-end/backendIndex.jsp">回到首頁</a></li>
+		</ul>
+	</div>
 	<%-- 錯誤表列 --%>
 	<c:if test="${not empty errorMsgs}">
 		<font style="color: red">請修正以下錯誤:</font>
@@ -84,7 +65,7 @@ th, td {
 			
 			<tr>
 				<td>直播檢舉內容:</td>
-				<td><input type="TEXT" name="live_report_content" size="45"
+				<td><input type="TEXT" class="form-control" name="live_report_content" size="45"
 					value="" /></td>
 			</tr>
 
@@ -129,7 +110,7 @@ th, td {
 
 			<tr>
 				<td>圖片上傳:</td>
-				<td><input name="photo" type="file" id="imgInp" accept="image/gif, image/jpeg, image/png" / ></td>
+				<td><input name="photo" type="file" id="imgInp" accept="image/gif, image/jpeg, image/png" /></td>
 				
 			</tr>
 			
@@ -142,8 +123,10 @@ th, td {
 
 		</table>
 		<br> <input type="hidden" name="action" value="insert"> <input
-			type="submit" value="送出新增">
+			type="submit" class="btn btn-primary" value="送出新增">
 	</FORM>
+	</main>
+	<jsp:include page="/back-end/backendfooter.jsp" />
 </body>
 
 <script>

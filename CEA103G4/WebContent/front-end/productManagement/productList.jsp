@@ -61,8 +61,8 @@
                     <li class="breadcrumb-item"><a href="#">商品管理</a></li>
                   </ul>
                 </div>
-                <div class="row productList">
-             <div class="product-tab col-lg-12">
+                <div class="row productList" id="productList">
+             <div class="product-tab col-lg-12 col-12">
               <div class="tab-item">
                 <ul class="nav" role="tablist">
                   <li>
@@ -74,7 +74,7 @@
                     <a data-toggle="tab" href="#tab-2" role="tab">上架中</a>
                   </li>
                   <li>
-                    <a data-toggle="tab" href="#tab-3" role="tab">待直播商品</a>
+                    <a data-toggle="tab" href="#tab-3" role="tab">直播商品</a>
                   </li>
                   <li>
                     <a data-toggle="tab" href="#tab-4" role="tab">已售出</a>
@@ -92,86 +92,142 @@
                     class="tab-pane fade-in active"
                     id="tab-1"
                     role="tabpanel">
+                 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
                    <table class="table">
   					<thead class="thead">
    					 <tr>
-     				 <th scope="col">#</th>
+     				 <th scope="col">
+     				   <div class="chose">
+              			<label for="choseAll1">
+                		 <input type="checkbox"  id="choseAll1"  />
+                 		<span class="checkmark"></span>
+              		  	</label>
+           			  </div>
+     				 </th>
      				 <th scope="col">商品圖片</th>
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
      				 <th scope="col">價格</th>
-     				 <th scope="col">數量</th>
+     				 <th scope="col">剩餘數量</th>
+     				 <th scope="col">已售數量</th>
      				 <th scope="col">商品種類</th>
      				 <th scope="col">編輯</th>
   				  </tr>
  				 </thead>
- 				 <tbody>
- 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" varStatus="i">
+ 				 <tbody id="chose1">
+
+ 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" >
    				 	<c:if test="${productVO.user_id == userVO.getUser_id() && productVO.product_state == 0}"> 
    				 <tr>
-     				 <th scope="row">${i.index+1}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <th scope="row">
+     				 	<div class="chose" >
+              				<label for="${productVO.product_no}">
+                		 <input type="checkbox"  id="${productVO.product_no}" name="product_no" value="${productVO.product_no}" />
+                 			<span class="checkmark"></span>
+              		  		</label>
+           				</div>          					 
+     				 </th>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
       				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
      				 <td>${productVO.product_remaining}</td>
+     				 <td>${productVO.product_sold}</td>
      				 <td>${product_typeSvc.getOneProduct_Type(productVO.pdtype_no).pdtype_name}</td>
    					 <td>
-   					 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
-   					   <button type="submit" class="btn btn-info submitAdd"  name="product_no"  value="${productVO.product_no}">修改</button>
-			     	   <input type="hidden" name="action"	value="getOne_For_Update">
-   					 </FORM>
-   					 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
-   					 <button type="submit" class="btn btn-danger" name="product_no"value="${productVO.product_no}">刪除</button>
-			         <input type="hidden" name="action" value="delete">
-			         </FORM>
+   					   <a href="<%=request.getContextPath()%>/ProductChange?action=getOne_For_Update&product_no=${productVO.product_no}" style="display:block;"><button type="button" class="btn btn-info">修改</button></a>
+<%--    					   <button type="button" class="btn btn-danger"  data-id="${productVO.product_no}">刪除</button> --%>
    					 </td>
    				 </tr>
    				 	</c:if>
    				 </c:forEach>
+   				 
    				 </tbody>
 				</table>
+				<div  class="fix-container" style="z-index: 999;">
+           		<div class="choseAll">
+             	  <label for="choseAll_b">
+                 	  全選
+                 <input type="checkbox"  id="choseAll_b"  />
+                 <span class="checkmark"></span>
+                </label>
+           		</div>
+           		<input type="hidden" name="action" value="updateState">
+				<button type="submit" class="btn btn-warning submitAdd" name="product_state" value="1">批次上架</button>
+           		</div>
+				</FORM>
                   </div>
                   <div class="tab-pane fade" id="tab-2" role="tabpanel">
-                                     <table class="table">
+                 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
+                   <table class="table">
   					<thead class="thead">
    					 <tr>
-     				 <th scope="col">#</th>
+     				 <th scope="col">
+     				   <div class="chose">
+              			<label for="choseAll2">
+                		 <input type="checkbox"  id="choseAll2"  />
+                 		<span class="checkmark"></span>
+              		  	</label>
+           			  </div>
+     				 </th>
      				 <th scope="col">商品圖片</th>
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
      				 <th scope="col">價格</th>
-     				 <th scope="col">數量</th>
+     				 <th scope="col">剩餘數量</th>
+     				 <th scope="col">已售數量</th>
      				 <th scope="col">商品種類</th>
      				 <th scope="col">編輯</th>
   				  </tr>
  				 </thead>
- 				 <tbody>
- 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" varStatus="i">
+ 				 <tbody id="chose2">
+ 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" >
    				 	<c:if test="${productVO.user_id == userVO.getUser_id() && productVO.product_state == 1}"> 
    				 <tr>
-     				 <th scope="row">${i.index+1}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <th scope="row">
+     				 	<div class="chose">
+              				<label for="${productVO.product_no}">
+                		 <input type="checkbox"  id="${productVO.product_no}" name="product_no" value="${productVO.product_no}" />
+                 			<span class="checkmark"></span>
+              		  		</label>
+           				</div>	 
+     				 </th>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
      				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
      				 <td>${productVO.product_remaining}</td>
+     				 <td>${productVO.product_sold}</td>
      				 <td>${product_typeSvc.getOneProduct_Type(productVO.pdtype_no).pdtype_name}</td>
    					 <td>
-   					 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
-   					   <button type="submit" class="btn btn-info submitAdd"  name="product_no"  value="${productVO.product_no}">修改</button>
-			     	   <input type="hidden" name="action"	value="getOne_For_Update">
-   					 </FORM>
-   					 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/product/product.do" style="margin-bottom: 0px;">
-   					 <button type="submit" class="btn btn-danger" name="product_no"value="${productVO.product_no}">刪除</button>
-			         <input type="hidden" name="action" value="delete">
-			         </FORM>
-   					 </td>
+   					   <a href="<%=request.getContextPath()%>/ProductChange?action=getOne_For_Update&product_no=${productVO.product_no}" style="display:block;"><button type="button" class="btn btn-info">修改</button></a>
+<%--    					   <button type="button" class="btn btn-danger"  data-id="${productVO.product_no}">刪除</button> --%>
+   					 </td>   					
    				 </tr>
    				 	</c:if>
    				 </c:forEach>
    				 </tbody>
 				</table>
+				<div  class="fix-container" style="z-index: 999;">
+           		<div class="choseAll">
+             	  <label for="choseAll_b2">
+                 	  全選
+                 <input type="checkbox"  id="choseAll_b2"  />
+                 <span class="checkmark"></span>
+                </label>
+           		</div>
+           		<input type="hidden" name="action" value="updateState">
+				<button type="submit" class="btn btn-warning" name="product_state" value="0">批次下架</button>
+           		</div>
+				</FORM>
                   </div>
                  <div class="tab-pane fade" id="tab-3" role="tabpanel">
                    <table class="table">
@@ -210,7 +266,6 @@
 				 <table class="table">
   					<thead class="thead">
    					 <tr>
-     				 <th scope="col">#</th>
      				 <th scope="col">商品圖片</th>
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
@@ -220,11 +275,14 @@
   				  </tr>
  				 </thead>
  				 <tbody>
- 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" varStatus="i">
+ 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}">
    				 	<c:if test="${productVO.user_id == userVO.getUser_id() && productVO.product_state == 3}"> 
    				 <tr>
-     				 <th scope="row">${i.index+1}</th>
-     				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
+     				 <td>
+     				 <a href="<%=request.getContextPath()%>/product/product.do?product_no=${productVO.product_no}" target="_blank">
+     				 <img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt="">
+     				 </a>
+     				 </td>
       				 <td>${productVO.product_name}</td>
      				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
      				 <td>${productVO.product_price}</td>
@@ -240,7 +298,6 @@
                  <table class="table">
   					<thead class="thead">
    					 <tr>
-     				 <th scope="col">#</th>
      				 <th scope="col">商品圖片</th>
      				 <th scope="col">商品名稱</th>
      				 <th scope="col">商品描述</th>
@@ -249,10 +306,9 @@
   				  </tr>
  				 </thead>
  				 <tbody>
- 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" varStatus="i">
+ 				 <c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}" >
    				 	<c:if test="${productVO.user_id == userVO.getUser_id() && productVO.product_state == 5}"> 
    				 <tr>
-     				 <th scope="row">${i.index+1}</th>
      				 <td><img width="200px" height="200px" src="${pageContext.request.contextPath}/ProductShowPhoto?product_no=${productVO.product_no}" class="rounded mx-auto d-block" alt=""></td>
       				 <td>${productVO.product_name}</td>
      				 <td class="productInfo"><textarea class="form-control"  maxlength="300" rows="6" readonly>${productVO.product_info}</textarea></td>
@@ -267,12 +323,12 @@
               </div>
             </div>
            </div>
+           
+
           </div>
 
     <!-- Product Shop Section End -->
-                
-
-
+               
               </main>
               <!-- Essential javascripts for application to work-->
               <script src="<%=request.getContextPath()%>/back-template/docs/js/jquery-3.2.1.min.js"></script>
@@ -283,6 +339,112 @@
               <script src="<%=request.getContextPath()%>/back-template/docs/js/plugins/pace.min.js"></script>
               <!-- Page specific javascripts-->
               <script type="text/javascript" src="<%=request.getContextPath()%>/back-template/docs/js/plugins/chart.js"></script>
+              <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.all.min.js"></script>
+              
+              <script>
+              
+//           	const productList = document.getElementById('productList');
+//           	productList.addEventListener('click', event => {
+// 				if (event.target.matches('.btn.btn-danger')){
+//         			ajaxDelete(event.target.dataset.id);
+//             	}
+//         });
+
+    			  
+//     		function ajaxDelete (productNo) {
+    			
+//   				$.ajax({ 
+//   				  type:"POST",
+<%--   				  url:"<%=request.getContextPath()%>/product/product.do", --%>
+//   				  data:{
+//   					  "product_no": productNo,
+//   					  "action": "delete"
+//   				  },
+//   				  success: function() {
+//   					window.location.reload();
+// 		  			Swal.fire({
+// 			  			  icon: 'success',
+// 			  			  title: '刪除成功',
+// 			  			  showConfirmButton: false,
+// 			  			  timer: 1500
+// 			  			});
+//   			      }, 	  
+//   				  error:function () {
+//   			  			Swal.fire({
+//   				  			  icon: 'error',
+//   				  			  title: '很抱歉,請重新點選',
+//   				  			  showConfirmButton: false,
+//   				  			  timer: 1000
+//   				  			});
+//   				  },				
+//   				 });
+//     		}	
+  		  
+    		var choseAll1 = document.getElementById("choseAll1");
+    		var choseAll_b = document.getElementById("choseAll_b");
+    		var chose1 = document.getElementById("chose1").getElementsByTagName("input");
+    		
+    		choseAll1.onclick = function() {
+    			choseAll_b.checked = this.checked;
+    			for(i = 0; i < chose1.length; i++) {
+    				chose1[i].checked = this.checked;
+    			}
+    		}
+    		
+    		choseAll_b.onclick = function() {
+    			choseAll1.checked = this.checked;
+    			for(i = 0; i < chose1.length; i++) {
+    				chose1[i].checked = this.checked;
+    			}
+    		}
+    		
+    		for (var i = 0; i < chose1.length; i++){
+    			chose1[i].onclick = function() {
+    				var flag = true;
+    			for (var i = 0; i < chose1.length; i++){
+    				if (!chose1[i].checked) {
+    					flag = false;
+    					}
+    				}
+    			choseAll1.checked = flag;
+    			choseAll_b.checked = flag;
+    			}
+    		}
+    		
+    		var choseAll2 = document.getElementById("choseAll2");
+    		var choseAll_b2 = document.getElementById("choseAll_b2");
+    		var chose2 = document.getElementById("chose2").getElementsByTagName("input");
+    		
+    		choseAll2.onclick = function() {
+    			choseAll_b2.checked = this.checked;
+    			for(i = 0; i < chose2.length; i++) {
+    				chose2[i].checked = this.checked;
+    			}
+    		}
+    		
+    		choseAll_b2.onclick = function() {
+    			choseAll2.checked = this.checked;
+    			for(i = 0; i < chose2.length; i++) {
+    				chose2[i].checked = this.checked;
+    			}
+    		}
+            
+    		for (var i = 0; i < chose2.length; i++){
+    			chose2[i].onclick = function() {
+    				var flag = true;
+    			for (var i = 0; i < chose2.length; i++){
+    				if (!chose2[i].checked) {
+    					flag = false;
+    					}
+    				}
+    			choseAll2.checked = flag;
+    			choseAll_b2.checked = flag;
+    			}
+    		}
+              
+              
+              </script>
+              
               
          </body>
          </html>

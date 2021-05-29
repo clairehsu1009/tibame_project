@@ -27,7 +27,7 @@ public class Live_reportJNDIDAO implements Live_reportDAO_interface {
 	private static final String GET_ALL_STMT = "SELECT * FROM LIVE_REPORT ORDER BY LIVE_REPORT_NO";
 	private static final String GET_ONE_STMT = "SELECT * FROM LIVE_REPORT WHERE LIVE_REPORT_NO = ?";
 	private static final String DELETE = "DELETE FROM LIVE_REPORT where LIVE_REPORT_NO = ?";
-	private static final String UPDATE = "UPDATE LIVE_REPORT SET LIVE_REPORT_CONTENT=?,LIVE_NO=?,USER_ID=?,EMPNO=?,LIVE_REPORT_STATE=?,PHOTO=? WHERE LIVE_REPORT_NO = ?";
+	private static final String UPDATE = "UPDATE LIVE_REPORT SET LIVE_REPORT_STATE=? WHERE LIVE_REPORT_NO = ?";
 
 	@Override
 	public void insert(Live_reportVO live_reportVO) {
@@ -78,13 +78,8 @@ public class Live_reportJNDIDAO implements Live_reportDAO_interface {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE);
 
-			pstmt.setString(1, live_reportVO.getLive_report_content());
-			pstmt.setInt(2, live_reportVO.getLive_no());
-			pstmt.setString(3, live_reportVO.getUser_id());
-			pstmt.setInt(4, live_reportVO.getEmpno());
-			pstmt.setInt(5, live_reportVO.getLive_report_state());
-			pstmt.setBytes(6, live_reportVO.getPhoto());
-			pstmt.setInt(7, live_reportVO.getLive_report_no());
+			pstmt.setInt(1, live_reportVO.getLive_report_state());
+			pstmt.setInt(2, live_reportVO.getLive_report_no());
 
 			pstmt.executeUpdate();
 

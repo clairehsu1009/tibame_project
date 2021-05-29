@@ -23,7 +23,7 @@ public class LiveService {
 		liveVO.setLive_photo(live_photo);
 		liveVO.setLive_id(live_id);
 		
-		dao.insert(liveVO);
+		liveVO.setLive_no(dao.insert(liveVO));
 		
 		return liveVO;
 		

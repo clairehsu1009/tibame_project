@@ -40,10 +40,10 @@ public class Order_detailService {
 		dao.delete(order_no);
 	}
 
-	public Order_detailVO getOneOrder_detail(Integer order_no) {
-		return dao.findByPrimaryKey(order_no);
+	public List<Order_detailVO> getOneOrder_detail(Integer order_no) {
+		return dao.getAllByNo(order_no);
 	}
-
+	
 	public List<Order_detailVO> getAll() {
 		return dao.getAll();
 	}

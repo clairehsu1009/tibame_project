@@ -3,8 +3,11 @@ package com.order.model;
 //import java.sql.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.live_order.model.Live_orderVO;
+import com.live_order_detail.model.Live_order_detailVO;
+import com.order_detail.model.Order_detailVO;
 
 public class OrderService {
 
@@ -74,12 +77,13 @@ public class OrderService {
 		return orderVO;
 	}
 	
-	public OrderVO updateSrating(Integer srating, String srating_content, Integer order_no) {
+	public OrderVO updateSrating(Integer srating, String srating_content,Integer logisticsstate , Integer order_no) {
 		
 		OrderVO orderVO = new OrderVO();
 		
 		orderVO.setSrating(srating);
 		orderVO.setSrating_content(srating_content);
+		orderVO.setLogisticsstate(logisticsstate);
 		orderVO.setOrder_no(order_no);
 		
 		dao.updateSrating(orderVO);
@@ -89,7 +93,7 @@ public class OrderService {
 	public OrderVO addOrderList(Integer order_state, Integer order_shipping,  Integer order_price, Integer pay_method, String rec_name, String zipcode, String city, String town,  String rec_addr, String rec_phone, String rec_cellphone, Integer logistics, Integer discount, String user_id, String seller_id, Integer point) {
 
 		OrderVO orderVO = new OrderVO();
-
+		System.out.println("check OrderService");
 		orderVO.setOrder_state(order_state);
 		orderVO.setOrder_shipping(order_shipping);
 		orderVO.setOrder_price(order_price);
@@ -111,9 +115,15 @@ public class OrderService {
 
 		return orderVO;
 	}
-
+	public Set<Order_detailVO> getDetailsByNo(Integer order_no){
+		return dao.getDetailsByNo(order_no);
+	}
+	
 	public void deleteOrder(Integer order_no) {
 		dao.delete(order_no);
+	}
+	public void cancelOrder(Integer order_no) {
+		dao.cancel(order_no);
 	}
 
 	public OrderVO getOneOrder(Integer order_no) {
@@ -136,6 +146,9 @@ public class OrderService {
 	public void updateUnshipped(List<Integer> list){
 		dao.updateUnshipped(list);
 		
+	}
+	public void insertWithDetails (OrderVO orderVO,List<Order_detailVO> list) {
+		dao.insertWithOrderList(orderVO, list);
 	}
 	
 }

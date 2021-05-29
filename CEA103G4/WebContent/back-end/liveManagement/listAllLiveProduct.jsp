@@ -94,7 +94,7 @@
 							</thead>
 							<tbody>
 								<c:forEach var="productVO" items="${list}" begin="0"
-									end="${list.size()-1}">
+									end="${list.size()}">
 									<c:if test="${productVO.product_state == 2}">
 										<tr>
 											<th scope="row">${productVO.live_no}</th>

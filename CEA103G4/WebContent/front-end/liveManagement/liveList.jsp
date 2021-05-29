@@ -104,7 +104,7 @@ table td, table tr, table th {
 								<c:if test="${liveVO.live_state >0}">
 
 									<tr>
-										<td>${liveVO.live_no}</td>
+										<td><a href="<%=request.getContextPath()%>/live/live.do?live_no=${liveVO.live_no}" target="_blank">${liveVO.live_no}</a></td>
 										<td>${liveVO.live_type}</td>
 										<td>${liveVO.live_name}</td>
 
@@ -124,7 +124,7 @@ table td, table tr, table th {
 												style="margin-bottom: 0px;">
 												<input type="submit" value="修改" class="btn btn-info">
 												<input type="hidden" name="live_no"
-													value="${liveVO.live_no}"> <input type="hidden"
+													value="${liveVO.live_no}"> <input type=hidden
 													name="action" value="getOne_For_Update">
 											</FORM>
 										</td>
@@ -188,7 +188,7 @@ table td, table tr, table th {
 												style="margin-bottom: 0px;">
 
 												<c:forEach var="productVO" items="${list}" begin="0"
-													end="${list.size()-1}">
+													end="${list.size()}">
 													<c:if
 														test="${productVO.product_state == 0 && productVO.user_id == userVO.user_id}">
 
@@ -274,7 +274,7 @@ table td, table tr, table th {
 												ACTION="<%=request.getContextPath()%>/product/product.do"
 												style="margin-bottom: 0px;">
 												<c:forEach var="productVO" items="${list}" begin="0"
-													end="${list.size()-1}">
+													end="${list.size()}">
 													<c:if
 														test="${productVO.product_state == 2 && productVO.user_id == userVO.user_id}">
 														<tr id="tr${productVO.product_no}">
@@ -335,7 +335,7 @@ table td, table tr, table th {
 	<script type="text/javascript"
 		src="<%=request.getContextPath()%>/back-template/docs/js/plugins/chart.js"></script>
 	<script>
-<c:forEach var="productVO" items="${list}" begin="0" end="${list.size()-1}">
+<c:forEach var="productVO" items="${list}" begin="0" end="${list.size()}">
 	<c:if test="${productVO.product_state == 0 && productVO.user_id == userVO.user_id}">
 		$("#TR${productVO.product_no}").click(function(e){
 			var checkBoxes = $("#CB${productVO.product_no}");

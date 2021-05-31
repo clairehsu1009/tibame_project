@@ -4960,9 +4960,7 @@ ul.modefemmeinfo {
 .product-item .pi-pic ul {
     position: absolute;
     right: 15px;
-    -webkit-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
+	bottom: 0px;
     text-align: right;
     width: 100%;
     left: initial;

@@ -35,7 +35,6 @@ import com.product_type.model.Product_TypeService;
 public class ProductSearch extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final String SUCESS_URL = "/front-end/productsell/shop.jsp";
 	private static final String ERROR_URL = "/front-end/index.jsp";
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -89,17 +88,14 @@ public class ProductSearch extends HttpServlet {
 				HttpSession session = req.getSession();
 				Map<String, String[]> map = (Map<String, String[]>)session.getAttribute("map");
 				
-				// 以下的 if 區塊只對第一次執行時有效
-				if (req.getParameter("whichPage") == null){
+
 					Map<String, String[]> map1 = new HashMap<String, String[]>(req.getParameterMap());
 					session.setAttribute("map",map1);
 					map = map1;
-				} 
-				
+
 				/*************************** 2.開始查詢資料 ****************************************/
 				ProductService productSvc = new ProductService();
 				List<ProductVO> list  = productSvc.getAllShop(map);
-//				session.setAttribute("products", list);
 				/***************************3.查詢完成,準備轉交(Send the Success view)************/
 				
 				res.setContentType("text/html; charset=utf-8");
@@ -182,23 +178,14 @@ public class ProductSearch extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			try {
-				/*************************** 1.接收請求參數 ****************************************/
-				HttpSession session = req.getSession();
-				Map<String, String[]> map = (Map<String, String[]>)session.getAttribute("map");
-				
-				// 以下的 if 區塊只對第一次執行時有效
-				if (req.getParameter("whichPage") == null){
-					Map<String, String[]> map1 = new HashMap<String, String[]>(req.getParameterMap());
-					session.setAttribute("map",map1);
-					map = map1;
-				} 
+				/*************************** 1.接收請求參數 ****************************************/			
 				String[] pdtypeNo = req.getParameterValues("pdtypeNo[]");
 				String priceType = req.getParameter("productPrice");
 				
 				/*************************** 2.開始查詢資料 ****************************************/
 				ProductService productSvc = new ProductService();
 				List<ProductVO> list  = productSvc.getAdvSearchShop(pdtypeNo, priceType);
-//				session.setAttribute("products", list);
+
 				/***************************3.查詢完成,準備轉交(Send the Success view)************/
 				res.setContentType("text/html; charset=utf-8");
 				PrintWriter out = res.getWriter();

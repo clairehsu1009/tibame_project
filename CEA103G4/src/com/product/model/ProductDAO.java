@@ -494,7 +494,7 @@ public class ProductDAO implements ProductDAO_interface {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-	
+
 		try {
 			
 			con = ds.getConnection();
@@ -1037,6 +1037,7 @@ public void updateState(Integer product_state , List<ProductVO> list) {
 				pstmt.setInt(1, product_state);
 				pstmt.setInt(2, aProduct.getProduct_no());
 				pstmt.addBatch();
+
 			}
 			
 			pstmt.executeBatch();

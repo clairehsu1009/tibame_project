@@ -104,27 +104,7 @@ public class ShoppingServlet extends HttpServlet {
 					}
 				}
 			
-			
 
-//			Map<String, List<ProductVO>> groupMap = new HashMap<>();
-//
-//			// Collect CO Executives
-//			groupMap = buylist.stream().collect(Collectors.groupingBy(ProductVO::getUser_id));
-//
-//			System.out.println("\n== ProductVOs by User_id ==");
-//			groupMap.forEach((k, v) -> {
-//				System.out.println("\nUser_id: " + k);
-//				v.forEach(ProductVO::printSummary);
-//			});
-			
-//			Collections.sort(buylist, new Comparator<Object>() {
-//				public int compare(Object a, Object b) {
-//					String one = ((ProductVO) a).getUser_id();
-//					String two = ((ProductVO) b).getUser_id();
-//					return one - two;
-//				}
-//			});
-			
 			session.setAttribute("shoppingcart", buylist);
 			req.setAttribute("productVO", product);
 			
@@ -142,25 +122,6 @@ public class ShoppingServlet extends HttpServlet {
 			
 		}		
 
-//			double total = 0;
-//			for (int i = 0; i < buylist.size(); i++) {
-//				ProductVO order = buylist.get(i);
-//				Double price = order.getPrice();
-//				Integer quantity = order.getQuantity();
-//				total += (price * quantity);
-//			}
-//			===================================================
-//          上方簡化寫法(Lambda)
-//			double total = buylist.stream()
-//								  .mapToDouble(b -> b.getProduct_price()*b.getProduct_quantity())
-//								  .sum();
-//			===================================================
-//			String amount = String.valueOf(total);
-//			req.setAttribute("amount", amount);
-//			String url = "/Checkout.jsp";
-//			RequestDispatcher rd = req.getRequestDispatcher(url);
-//			rd.forward(req, res);
-//		}
 	}
 
 	private ProductVO getProduct(HttpServletRequest req) {

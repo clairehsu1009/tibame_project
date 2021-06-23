@@ -250,7 +250,7 @@
 	
 	<script>
 	
-	const productsAdd = document.getElementById('products');
+	const productsAdd = document.getElementById('products');		
 	productsAdd.addEventListener('click', event => {
 		if (event.target.matches('.icon_bag_alt')) {
 	    	addCart(event.target.dataset.id);	

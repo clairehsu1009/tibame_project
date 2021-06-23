@@ -315,9 +315,15 @@ public class ProductServlet extends HttpServlet {
 					errorMsgs.add("請上傳一張圖片");
 				} else {
 					InputStream in = part.getInputStream();
-					product_photo = new byte[in.available()];
-					in.read(product_photo);
+					byte[] buffer = new byte[4 * 1024];
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+					int i;
+					while ((i = in.read(buffer)) != -1) {
+						baos.write(buffer, 0, i);
+						baos.flush();
+					}
 					in.close();
+					product_photo = baos.toByteArray();
 				}
 
 				

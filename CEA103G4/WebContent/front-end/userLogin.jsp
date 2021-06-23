@@ -235,7 +235,7 @@ color: #007bff;
             <div class="login-form">
               <h2 style="margin-top: 10px;margin-bottom: 10px;">會員登入</h2>
               <div style="text-align: center;color:#e7ab3c;font-weight: 600;">${notifyMsgs.Register}${notifyMsgs.changePwd}</div>
-              <form METHOD="post" class="login-form" action="<%=request.getContextPath()%>/user/user.do">
+              <form METHOD="post" class="login-form" action="<%=request.getContextPath()%>/FrondEnd_LoginHandler">
                 <div class="group-input">
                   <label for="user_id">UserID</label>
                   <input type="text" name="user_id" value="${(userVO==null)? '' : userVO.user_id}" placeholder="會員帳號" autofocus/><td><font color=red><b>${errorMsgs.user_id}</b></font></td>

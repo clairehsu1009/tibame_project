@@ -13834,6 +13834,11 @@ be a descendant of the grid when it is being dragged.
   color: #fff;
 }
 
+.app-sidebar__user img {
+	width:100px;
+	height:100px;
+}
+
 .app-sidebar__user-avatar {
   -webkit-box-flex: 0;
       -ms-flex: 0 0 auto;

@@ -13,11 +13,14 @@
 	Map<String, Vector<ProductVO>> mBuylist = new HashMap<String, Vector<ProductVO>>();
 	for(ProductVO vo:buylist2) {
 		String user_id = vo.getUser_id();
+
 		Vector<ProductVO> vector = mBuylist.get(user_id);
+
 		if(vector == null) {
 			vector = new Vector<ProductVO>();
 		}
 		vector.add(vo);
+
 		mBuylist.put(user_id, vector);
 	}
 	pageContext.setAttribute("mBuylist", mBuylist);

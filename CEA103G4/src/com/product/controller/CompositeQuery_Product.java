@@ -30,10 +30,12 @@ public class CompositeQuery_Product {
 
 	public static String get_WhereCondition(Map<String, String[]> map) {
 		Set<String> keys = map.keySet();
+
 		StringBuffer whereCondition = new StringBuffer();
 		int count = 0;
 		for (String key : keys) {
 			String value = map.get(key)[0];
+
 			if (value != null && value.trim().length() != 0	&& !"action".equals(key)) {
 				count++;
 				String aCondition = get_aCondition_For_myDB(key, value.trim());

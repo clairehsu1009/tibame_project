@@ -13,6 +13,7 @@ Mode Femme 女性二手直播競標平台 (副組長)
 src -- Product、Product_report、Product_type、Seller_follow
 
 JSP程式碼
+
 WebContent/front-end -- ProductManagemer、Productsell(product、productFavorite、sellerHome、shop)、header、footer、index
 
 WebContent/back-end -- ProductManagement、Product_report、product_type

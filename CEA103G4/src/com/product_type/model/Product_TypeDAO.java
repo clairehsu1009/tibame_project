@@ -20,17 +20,11 @@ import org.json.JSONObject;
 import com.product.model.ProductVO;
 import com.seller_follow.model.Seller_FollowVO;
 
+import datasource.dataSourceManager;
+
 public class Product_TypeDAO  implements Product_TypeDAO_interface  {
 
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	
 	//新增商品類別
 	private static final String INSERT_STMT = 

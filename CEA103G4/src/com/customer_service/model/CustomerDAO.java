@@ -12,18 +12,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 
 
 public class CustomerDAO implements CustomerDAO_interface{
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/CEA103_G4");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	
 	private static final String INSERT_STMT = 
 			"INSERT INTO CUSTOMER_SERVICE (USER_ID,CONTENT,CASE_STATE,EMPNO,EMP_RESPONSE,CASE_TIME ) VALUES ( ?, ?, ?, ?, ?, ?)";

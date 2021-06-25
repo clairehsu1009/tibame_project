@@ -16,19 +16,24 @@ import javax.sql.DataSource;
 import com.live.model.LiveVO;
 import com.product.controller.CompositeQuery_Product;
 
+import datasource.dataSourceManager;
+
 
 public class ProductDAO implements ProductDAO_interface {
 
 	
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+
+	//原始版
+//	private static DataSource ds = null;
+//	static {
+//		try {
+//			Context ctx = new InitialContext();
+//			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
+//		} catch (NamingException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	//新增商品 賣家上架功能
 	private static final String INSERT_STMT = "INSERT INTO PRODUCT (product_name,product_info,product_price,product_remaining,product_state,product_photo,user_id,pdtype_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

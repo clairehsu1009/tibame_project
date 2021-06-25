@@ -7,17 +7,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class QaDAO implements QaDAO_interface {
 	
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+	
 	private static final String INSERT_STMT = 
 			"INSERT INTO `QA` (`EMPNO`,`QA_DATE`,`QA_TYPE`,`QUESTION`,`ANSWER`) VALUES (?, ?, ?, ?, ?)";
 	private static final String GET_ALL_STMT = 

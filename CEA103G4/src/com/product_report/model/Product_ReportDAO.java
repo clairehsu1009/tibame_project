@@ -9,18 +9,12 @@ import javax.sql.DataSource;
 
 import com.product_type.model.Product_TypeVO;
 
+import datasource.dataSourceManager;
+
 public class Product_ReportDAO implements Product_ReportDAO_interface {
 
-	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+	
 	//前台會員新增商品檢舉(時間sql已預設當下時間,檢舉狀態已預設未處理,故新增資料時不需再填寫)
 	private static final String INSERT_STMT = 
 		"INSERT INTO PRODUCT_REPORT (pro_report_content,product_no,user_id) VALUES (?, ?, ?)";

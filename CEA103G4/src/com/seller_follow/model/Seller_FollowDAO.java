@@ -12,21 +12,15 @@ import javax.sql.DataSource;
 
 import com.product.model.ProductVO;
 
+import datasource.dataSourceManager;
+
 
 
 public class Seller_FollowDAO implements Seller_FollowDAO_interface {
 
 
 	
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	
     //關注賣家,買家可以關注賣家(新增)、可以查詢自己關注的清單(查詢)、可以取消關注的賣家(刪除)
 	private static final String INSERT_STMT = 

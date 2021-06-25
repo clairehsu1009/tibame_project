@@ -19,16 +19,10 @@ import com.live_order_detail.model.Live_order_detailJNDIDAO;
 import com.live_order_detail.model.Live_order_detailVO;
 import com.product.model.ProductVO;
 
+import datasource.dataSourceManager;
+
 public class Live_orderJNDIDAO implements Live_orderDAO_interface{
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	
 	private static final String INSERT_STMT = "INSERT INTO LIVE_ORDER (ORDER_STATE,ORDER_SHIPPING,ORDER_PRICE,PAY_METHOD,REC_NAME,REC_ADDR,REC_PHONE,REC_CELLPHONE,LOGISTICS,LOGISTICS_STATE,DISCOUNT,LIVE_NO,USER_ID,SELLER_ID,SRATING,SRATING_CONTENT,POINT,CITY,TOWN,ZIPCODE,PAY_DEADLINE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?,?,?,DATE_ADD(CURRENT_TIMESTAMP() , INTERVAL 3 HOUR))";
 	private static final String GET_ALL_STMT = "SELECT * FROM LIVE_ORDER order by LIVE_ORDER_NO";

@@ -13,18 +13,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class Order_detailDAO implements Order_detailDAO_interface{
 
 	//
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	
 	private static final String INSERT_STMT = 
 			"INSERT INTO `ORDER_DETAIL` (`ORDER_NO`,`ORDER_PRICE`,`PRODUCT_NO`,`PRODUCT_NUM`) VALUES (?, ?, ?, ?)";

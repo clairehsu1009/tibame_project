@@ -13,16 +13,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class Live_order_detailJNDIDAO implements Live_order_detailDAO_interface {
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 
 	private static final String INSERT_STMT = "INSERT INTO LIVE_ORDER_DETAIL (LIVE_ORDER_NO,PRODUCT_NO,PRICE,PRODUCT_NUM) VALUES (?,?,?,?)";
 	private static final String GET_ALL_STMT = "SELECT * FROM LIVE_ORDER_DETAIL ORDER BY LIVE_ORDER_NO AND PRODUCT_NO";

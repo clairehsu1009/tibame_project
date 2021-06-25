@@ -13,17 +13,11 @@ import javax.naming.NamingException;
 import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class FunDAO implements FunDAO_interface {
 
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 
 	private static final String INSERT_STMT = "INSERT INTO FUN (FUN_NAME,STATE) VALUES (?，?)";
 	private static final String GET_ALL_STMT = "SELECT FUNNO,FUN_NAME,STATE FROM FUN ORDER BY FUNNO";

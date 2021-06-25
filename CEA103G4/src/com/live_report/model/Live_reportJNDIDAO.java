@@ -12,16 +12,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class Live_reportJNDIDAO implements Live_reportDAO_interface {
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 
 	private static final String INSERT_STMT = "INSERT INTO LIVE_REPORT (LIVE_REPORT_CONTENT,LIVE_NO,USER_ID,EMPNO,LIVE_REPORT_STATE,PHOTO) VALUES (?, ?, ? ,? ,? ,? )";
 	private static final String GET_ALL_STMT = "SELECT * FROM LIVE_REPORT ORDER BY LIVE_REPORT_NO";

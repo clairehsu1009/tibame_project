@@ -8,18 +8,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class MessageJNDIDAO implements MessageDAO_interface{
 
 	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
 	private static final String INSERT_STMT = 
 			"INSERT INTO `MESSAGE` (`USER_ID`,`CONTENT`,`SELLER_ID`,`MESSAGE_TIME`) VALUES (?, ?, ?, ?)";
 	private static final String GET_ALL_STMT = 

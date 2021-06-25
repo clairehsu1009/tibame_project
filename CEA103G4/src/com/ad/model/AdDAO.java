@@ -9,17 +9,12 @@ import javax.sql.DataSource;
 
 import com.ad.model.AdVO;
 
+import datasource.dataSourceManager;
+
 public class AdDAO implements AdDAO_interface {
 	
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+	
 	private static final String INSERT_STMT = 
 			"INSERT INTO `AD` (`EMPNO`,`AD_CONTENT`,`AD_PHOTO`,`AD_STATE`,`AD_START_DATE`,`AD_END_DATE`,`AD_URL`) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String GET_ALL_STMT = 

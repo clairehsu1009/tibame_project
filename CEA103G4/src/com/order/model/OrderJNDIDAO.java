@@ -13,20 +13,15 @@ import com.order_detail.model.Order_detailVO;
 import com.product.model.ProductDAO;
 import com.product.model.ProductVO;
 
+import datasource.dataSourceManager;
+
 
 
 public class OrderJNDIDAO implements OrderDAO_interface{  
 
 	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+	
 	private static final String INSERT_STMT = 
 			"INSERT INTO `ORDER` (`ORDER_NO`,`ORDER_STATE`,`ORDER_SHIPPING`,`ORDER_PRICE`,`PAY_METHOD`,`PAY_DEADLINE`,`REC_NAME`,`ZIPCODE`,`CITY`,`TOWN`,`REC_ADDR`,`REC_PHONE`,`REC_CELLPHONE`,`LOGISTICS`,`LOGISTICSSTATE`,`DISCOUNT`,`USER_ID`,`SELLER_ID`,`SRATING`,`SRATING_CONTENT`,`POINT`) VALUES (null, ?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP() , INTERVAL 3 HOUR), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String INSERT_STMT2 = 

@@ -8,18 +8,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import datasource.dataSourceManager;
+
 public class NoticeJNDIDAO implements NoticeDAO_interface{
 
 	// 一個應用程式中,針對一個資料庫 ,共用一個DataSource即可
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/admin");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DataSource ds = dataSourceManager.get();
+	
 	private static final String INSERT_STMT = 
 			"INSERT INTO `NOTICE` (`USER_ID`,`NOC_CONTENT`,`NOC_STATE`) VALUES (?, ?, ?)";
 	private static final String GET_ALL_STMT = 

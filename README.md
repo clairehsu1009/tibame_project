@@ -24,6 +24,7 @@ src -- Product、Product_report、Product_type、Seller_follow
 JSP程式碼
 
 WebContent/front-end -- ProductManagemer、Productsell(product、productFavorite、sellerHome、shop)、header、footer、index
+
 ![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/jsp01.png)
 
 WebContent/back-end -- ProductManagement、Product_report、product_type

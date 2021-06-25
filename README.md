@@ -2,6 +2,7 @@
 TibaMe JAVA雲端技術服務養成班(2020/12/21-2021/06/04) 
 
 Mode Femme 女性二手直播競標平台 (副組長)
+![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/modefemme.png)
 
 負責項目
 

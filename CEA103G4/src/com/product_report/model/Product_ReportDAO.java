@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 
 import com.product_type.model.Product_TypeVO;
 
+import datasource.DBBase;
+import datasource.PreparedStatementSetter;
 import datasource.dataSourceManager;
 
 public class Product_ReportDAO implements Product_ReportDAO_interface {
@@ -39,122 +41,45 @@ public class Product_ReportDAO implements Product_ReportDAO_interface {
 
 	@Override
 	public void insert(Product_ReportVO product_reportVO) {
-
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
-
-			pstmt.setString(1, product_reportVO.getPro_report_content());
-			pstmt.setInt(2, product_reportVO.getProduct_no());
-			pstmt.setString(3, product_reportVO.getUser_id());
-//			pstmt.setInt(4, product_reportVO.getEmpno());
-
-			pstmt.executeUpdate();
-
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+		
+		DBBase.execute(INSERT_STMT, new PreparedStatementSetter() {
+			
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, product_reportVO.getPro_report_content());
+				preparedStatement.setInt(2, product_reportVO.getProduct_no());
+				preparedStatement.setString(3, product_reportVO.getUser_id());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});	
 	}
 
 	@Override
 	public void update(Product_ReportVO product_reportVO) {
-
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE);
+		
+		DBBase.execute(UPDATE, new PreparedStatementSetter() {
 			
-			pstmt.setInt(1, product_reportVO.getProduct_no());
-			pstmt.setInt(2, product_reportVO.getProreport_state());
-			pstmt.setInt(3, product_reportVO.getPro_report_no());
-
-			pstmt.executeUpdate();
-
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, product_reportVO.getProduct_no());
+				preparedStatement.setInt(2, product_reportVO.getProreport_state());
+				preparedStatement.setInt(3, product_reportVO.getPro_report_no());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});
 	}
 
 	@Override
 	public void delete(Integer pro_report_no) {
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE);
-
-			pstmt.setInt(1, pro_report_no);
-
-			pstmt.executeUpdate();
-
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+		DBBase.execute(DELETE, new PreparedStatementSetter() {
+			
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, pro_report_no);
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
 	
 	@Override

@@ -20,6 +20,8 @@ import org.json.JSONObject;
 import com.product.model.ProductVO;
 import com.seller_follow.model.Seller_FollowVO;
 
+import datasource.DBBase;
+import datasource.PreparedStatementSetter;
 import datasource.dataSourceManager;
 
 public class Product_TypeDAO  implements Product_TypeDAO_interface  {
@@ -50,118 +52,41 @@ public class Product_TypeDAO  implements Product_TypeDAO_interface  {
 	@Override
 	public void insert(Product_TypeVO product_typeVO){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
+		DBBase.execute(INSERT_STMT, new PreparedStatementSetter() {
 			
-			pstmt.setString(1, product_typeVO.getPdtype_name());
-			
-			pstmt.executeUpdate();
-			
-
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, product_typeVO.getPdtype_name());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});
 	}
 	
 	@Override
 	public void update(Product_TypeVO product_typeVO){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE);
-
-			pstmt.setString(1, product_typeVO.getPdtype_name());
-			pstmt.setInt(2, product_typeVO.getPdtype_no());
+		DBBase.execute(UPDATE, new PreparedStatementSetter() {
 			
-
-			pstmt.executeUpdate();
-			
-			
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, product_typeVO.getPdtype_name());
+				preparedStatement.setInt(2, product_typeVO.getPdtype_no());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});
 	}
 
 	@Override
 	public void delete(Integer pdtype_no){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE);
+		DBBase.execute(DELETE, new PreparedStatementSetter() {
 			
-			pstmt.setInt(1, pdtype_no);
-
-			pstmt.executeUpdate();
-
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, pdtype_no);
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 
 import com.product.model.ProductVO;
 
+import datasource.DBBase;
+import datasource.PreparedStatementSetter;
 import datasource.dataSourceManager;
 
 
@@ -41,80 +43,28 @@ public class Seller_FollowDAO implements Seller_FollowDAO_interface {
 	@Override
 	public void insert(Seller_FollowVO seller_followVO){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
+		DBBase.execute(INSERT_STMT, new PreparedStatementSetter() {
 			
-			pstmt.setString(1, seller_followVO.getUser_id());
-			pstmt.setString(2, seller_followVO.getSeller_id());
-			
-			pstmt.executeUpdate();
-			
-
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, seller_followVO.getUser_id());
+				preparedStatement.setString(2, seller_followVO.getSeller_id());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
 
 	@Override
 	public void delete(Integer tracer_no){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE);
+		DBBase.execute(DELETE, new PreparedStatementSetter() {
 			
-			pstmt.setInt(1, tracer_no);
-
-			pstmt.executeUpdate();
-
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, tracer_no);
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		});
 	}
 
 	@Override

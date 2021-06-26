@@ -16,6 +16,8 @@ import javax.sql.DataSource;
 import com.live.model.LiveVO;
 import com.product.controller.CompositeQuery_Product;
 
+import datasource.DBBase;
+import datasource.PreparedStatementSetter;
 import datasource.dataSourceManager;
 
 
@@ -65,184 +67,77 @@ public class ProductDAO implements ProductDAO_interface {
 	private static final String SOLD = "UPDATE PRODUCT SET PRODUCT_STATE=3 WHERE PRODUCT_NO = ?";
 	
 	private static final String GET_FAVORITE = "SELECT product_no,product_name,product_info,product_price,product_quantity,product_remaining,product_state,user_id,pdtype_no FROM PRODUCT where product_no = ?";
+	
 	@Override
 	public void insert(ProductVO productVO){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
+		DBBase.execute(INSERT_STMT, new PreparedStatementSetter() {
 			
-			pstmt.setString(1, productVO.getProduct_name());
-			pstmt.setString(2, productVO.getProduct_info());
-			pstmt.setInt(3, productVO.getProduct_price());
-			pstmt.setInt(4, productVO.getProduct_remaining());
-			pstmt.setInt(5, productVO.getProduct_state());
-			pstmt.setBytes(6, productVO.getProduct_photo());
-			pstmt.setString(7, productVO.getUser_id());
-			pstmt.setInt(8, productVO.getPdtype_no());
-
-			pstmt.executeUpdate();
-			
-
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, productVO.getProduct_name());
+				preparedStatement.setString(2, productVO.getProduct_info());
+				preparedStatement.setInt(3, productVO.getProduct_price());
+				preparedStatement.setInt(4, productVO.getProduct_remaining());
+				preparedStatement.setInt(5, productVO.getProduct_state());
+				preparedStatement.setBytes(6, productVO.getProduct_photo());
+				preparedStatement.setString(7, productVO.getUser_id());
+				preparedStatement.setInt(8, productVO.getPdtype_no());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
+
+
 
 	@Override
 	public void update(ProductVO productVO){
-
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE);
-
-	
-			pstmt.setString(1, productVO.getProduct_name());
-			pstmt.setString(2, productVO.getProduct_info());
-			pstmt.setInt(3, productVO.getProduct_price());
-			pstmt.setInt(4, productVO.getProduct_remaining());
-			pstmt.setInt(5, productVO.getProduct_state());
-			pstmt.setBytes(6,productVO.getProduct_photo());
-			pstmt.setString(7,productVO.getUser_id());
-			pstmt.setInt(8, productVO.getPdtype_no());
-			pstmt.setInt(9, productVO.getProduct_no());
-
-			pstmt.executeUpdate();
+		
+		DBBase.execute(UPDATE, new PreparedStatementSetter() {
 			
-			
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, productVO.getProduct_name());
+				preparedStatement.setString(2, productVO.getProduct_info());
+				preparedStatement.setInt(3, productVO.getProduct_price());
+				preparedStatement.setInt(4, productVO.getProduct_remaining());
+				preparedStatement.setInt(5, productVO.getProduct_state());
+				preparedStatement.setBytes(6,productVO.getProduct_photo());
+				preparedStatement.setString(7,productVO.getUser_id());
+				preparedStatement.setInt(8, productVO.getPdtype_no());
+				preparedStatement.setInt(9, productVO.getProduct_no());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
 	
 	@Override
 	public void updateState(ProductVO productVO){
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATESTATE);
-
-			pstmt.setInt(1, productVO.getProduct_state());
-			pstmt.setInt(2, productVO.getProduct_no());
-
-			pstmt.executeUpdate();
+		DBBase.execute(UPDATESTATE, new PreparedStatementSetter() {
 			
-			
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, productVO.getProduct_state());
+				preparedStatement.setInt(2, productVO.getProduct_no());
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
 	
 
 
 	@Override
 	public void delete(Integer product_no){
-
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE);
+		
+		DBBase.execute(DELETE, new PreparedStatementSetter() {
 			
-
-
-			pstmt.setInt(1, product_no);
-
-			pstmt.executeUpdate();
-
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. "
-					+ se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
+			@Override
+			public void configure(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, product_no);
+				
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-
+		});
 	}
 
 	@Override

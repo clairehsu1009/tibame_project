@@ -156,7 +156,7 @@ public class ProductServlet extends HttpServlet {
 				ProductVO productVO = new ProductVO();
 				
 				Integer product_no = new Integer(req.getParameter("product_no").trim());
-				
+
 				String product_name = req.getParameter("product_name");
 				String product_nameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{2,20}$";
 				if (product_name == null || product_name.trim().length() == 0) {

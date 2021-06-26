@@ -13,19 +13,22 @@ Mode Femme 女性二手直播競標平台 (副組長)
 (會員專區) 賣家商品批次上下架、修改、瀏覽。
 
 後台：商品管理/商品檢舉管理/商品分類管理
-![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/dolist.png)
+![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/list.png)
 
 
 程式碼
 src -- Product、Product_report、Product_type、Seller_follow
+
 ![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/src.png)
 
 JSP程式碼
 
 WebContent/front-end -- ProductManagemer、Productsell(product、productFavorite、sellerHome、shop)、header、footer、index
+
 ![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/jsp01.png)
 
 WebContent/back-end -- ProductManagement、Product_report、product_type
+
 ![image](https://github.com/luluchen622/tibame_project/blob/master/gitImg/jsp02.png)
 
 個人履歷
